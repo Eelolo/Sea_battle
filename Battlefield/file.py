@@ -1,8 +1,8 @@
 class Battlefield:
     @staticmethod
-    def building_battlefield(self):
+    def building_battlefield():
         new_battlefield = {}
-        integers = [str(integer) for integer in range(1,11)]
+        integers = [str(integer) for integer in range(1, 11)]
         letters = [chr(letter) for letter in (range(ord('a'), ord('k')))]
         battlefield_keys = []
 
@@ -24,6 +24,13 @@ class Battlefield:
         return new_battlefield
 
     def __init__(self):
+        self.battlefield = self.building_battlefield()
+        self.ships = []
+        self.amount_ships = 0
+        self.fourdeck = []
+        self.tripledecks = []
+        self.doubledecks = []
+        self.singledecks = []
+
+    def __str__(self):
         pass
-
-
