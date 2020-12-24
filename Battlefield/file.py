@@ -25,12 +25,14 @@ class Battlefield:
 
     def __init__(self):
         self.battlefield = self.building_battlefield()
-        self.ships = []
         self.amount_ships = 0
+        self.ships = []
         self.fourdeck = []
         self.tripledecks = []
         self.doubledecks = []
         self.singledecks = []
 
     def __str__(self):
-        pass
+        return '    a b c d e f g h i j\n\n' + \
+               ''.join(self.battlefield.values())
+
