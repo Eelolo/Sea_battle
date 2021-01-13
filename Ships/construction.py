@@ -3,14 +3,21 @@ from random import choice, randint
 
 def new_ship(length, **kwargs):
     try:
-        if kwargs['orientation'] != 'hor' or 'vert':
-            raise ValueError('Orientation must be "hor" or "vert"')
+        if kwargs['orientation'] not in ('hor', 'vert'):
+            raise ValueError('Orientation must be "hor" or "vert".')
         orientation = kwargs['orientation']
     except KeyError:
         orientation = choice(('hor', 'vert'))
 
-    integer = randint(1, 10)
-    letter = randint(97, 106)
+    try:
+        if kwargs['start_point'][0] not in range(1,11) and ord(kwargs['start_point'][1]) not in range(97, 106):
+            raise ValueError('Start point must be like "1a" or "6d", in range 1-10 and a-j.')
+        integer = int(kwargs['start_point'][0])
+        letter = ord(kwargs['start_point'][1])
+    except KeyError:
+        integer = randint(1, 10)
+        letter = randint(97, 106)
+
     ship = []
     if orientation == 'hor':
         if letter > 106 - length:
