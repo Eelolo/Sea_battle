@@ -1,6 +1,5 @@
 class Battlefield:
-    @staticmethod
-    def building_battlefield():
+    def new_battlefield(self):
         new_battlefield = {}
         integers = [str(integer) for integer in range(1, 11)]
         letters = [chr(letter) for letter in (range(ord('a'), ord('k')))]
@@ -24,7 +23,7 @@ class Battlefield:
         return new_battlefield
 
     def __init__(self):
-        self.battlefield = self.building_battlefield()
+        self.field = self.new_battlefield()
         self.amount_ships = 0
         self.ships = []
         self.fourdeck = []
@@ -34,5 +33,5 @@ class Battlefield:
 
     def __str__(self):
         return '    a b c d e f g h i j\n\n' + \
-               ''.join(self.battlefield.values())
+               ''.join(self.field.values())
 
