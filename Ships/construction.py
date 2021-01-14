@@ -11,7 +11,7 @@ def new_ship(length, **kwargs):
 
     try:
         if kwargs['start_point'][0] not in range(1,11) and ord(kwargs['start_point'][1]) not in range(97, 106):
-            raise ValueError('Start point must be like "1a" or "6d", in range 1-10 and a-j.')
+            raise ValueError('Start point must be like "1a" or "6d", in range 1a-10j.')
         integer = int(kwargs['start_point'][0])
         letter = ord(kwargs['start_point'][1])
     except KeyError:
