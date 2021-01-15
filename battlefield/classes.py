@@ -59,3 +59,13 @@ class Cursor:
             self.point_key_idx += 1
             self.point = self.field_keys[self.point_key_idx]
         return self.point
+
+    def move(self, move):
+        if move in ('up', 'down', 'left', 'right'):
+            self.battlefield.change_value(self.point, '~')
+            new_point = getattr(self, move)()
+            self.battlefield.change_value(new_point, 'X')
+        else:
+            raise ValueError('Move must be in: up, down, left, right.')
+
+        return new_point
