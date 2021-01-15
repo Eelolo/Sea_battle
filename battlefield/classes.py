@@ -22,3 +22,15 @@ class Battlefield:
     def __str__(self):
         return '    a b c d e f g h i j\n\n' + \
                ''.join(self.field.values())
+
+
+class Cursor:
+    def __init__(self, start_point=None):
+        self.battlefield = Battlefield()
+        self.field_keys = list(self.battlefield.field.keys())
+        if start_point is not None:
+            self.point = start_point
+        else:
+            self.point = '1a'
+        self.battlefield.change_value(self.point, 'X')
+        self.point_key_idx = self.field_keys.index(self.point)
