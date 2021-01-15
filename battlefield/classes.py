@@ -34,3 +34,9 @@ class Cursor:
             self.point = '1a'
         self.battlefield.change_value(self.point, 'X')
         self.point_key_idx = self.field_keys.index(self.point)
+
+    def up(self):
+        if self.point_key_idx not in range(1, 11):
+            self.point_key_idx -= 11
+            self.point = self.field_keys[self.point_key_idx]
+        return self.point
