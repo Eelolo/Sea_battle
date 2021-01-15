@@ -46,3 +46,9 @@ class Cursor:
             self.point_key_idx += 11
             self.point = self.field_keys[self.point_key_idx]
         return self.point
+
+    def left(self):
+        if self.point_key_idx not in range(1, 111, 11):
+            self.point_key_idx -= 1
+            self.point = self.field_keys[self.point_key_idx]
+        return self.point
