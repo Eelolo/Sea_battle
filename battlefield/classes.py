@@ -11,6 +11,7 @@ class Battlefield:
         self.singledecks = []
 
     def change_value(self, point, value):
+        check_point_value(point)
         if '\n' in self.field[point]:
             self.field[point] = ' {}\n'.format(value)
         else:
