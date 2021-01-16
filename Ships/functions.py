@@ -1,6 +1,6 @@
 from random import choice, randint
-from sea_battle.battlefield.classes import Cursor
-from sea_battle.battlefield.functions import check_point_value
+from battlefield.classes import Cursor
+from battlefield.functions import check_point_value
 
 def new_ship(length, orientation=None, start_point=None):
     if orientation is not None and orientation in ('hor', 'vert'):
