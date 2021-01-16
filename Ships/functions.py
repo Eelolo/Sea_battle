@@ -28,16 +28,16 @@ def new_ship(length, orientation=None, start_point=None):
     if orientation == 'hor':
         if letter > 106 - length:
             for _ in range(length - 1):
-                ship.append(cur.move('left'))
+                ship.append(cur.left())
         else:
             for _ in range(length - 1):
-                ship.append(cur.move('right'))
+                ship.append(cur.right())
     elif orientation == 'vert':
         if integer > 10 - length:
             for _ in range(length - 1):
-                ship.append(cur.move('up'))
+                ship.append(cur.up())
         else:
             for _ in range(length - 1):
-                ship.append(cur.move('down'))
+                ship.append(cur.down())
 
     return ship
