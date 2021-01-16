@@ -16,7 +16,7 @@ def new_ship(length, orientation=None, start_point=None):
             integer = 10
         else:
             integer = int(start_point[0])
-        letter = ord(start_point[1])
+        letter = ord(start_point[-1])
     else:
         integer = randint(1, 10)
         letter = randint(97, 106)
@@ -26,14 +26,14 @@ def new_ship(length, orientation=None, start_point=None):
     cur = Cursor(start_point=start_point)
     ship.append(start_point)
     if orientation == 'hor':
-        if letter > 106 - length:
+        if letter > 107 - length:
             for _ in range(length - 1):
                 ship.append(cur.left())
         else:
             for _ in range(length - 1):
                 ship.append(cur.right())
     elif orientation == 'vert':
-        if integer > 10 - length:
+        if integer > 11 - length:
             for _ in range(length - 1):
                 ship.append(cur.up())
         else:
