@@ -35,6 +35,18 @@ class Cursor:
             self.point = '1a'
         self._battlefield.change_value(self.point, 'X')
         self._point_key_idx = self._field_keys.index(self.point)
+        self._reversed_moves = {
+            'right': 'left',
+            'left': 'right',
+            'down': 'up',
+            'up': 'down'
+        }
+        self._perpendicular_moves = {
+            'right': ('up', 'down'),
+            'left': ('up', 'down'),
+            'down': ('right', 'left'),
+            'up': ('right', 'left')
+        }
 
     def __setattr__(self, key, value):
         if key == 'point':
