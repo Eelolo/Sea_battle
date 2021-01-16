@@ -41,6 +41,7 @@ class Cursor:
             check_point_value(value)
             if self.__dict__.get('point') is not None:
                 self._battlefield.change_value(self.__dict__.get('point'), '~')
+                self._point_key_idx = self._field_keys.index(value)
             self._battlefield.change_value(value, 'X')
 
         self.__dict__[key] = value
