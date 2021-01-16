@@ -20,3 +20,8 @@ def new_battlefield():
             new_battlefield[key] = ' ~'
 
     return new_battlefield
+
+
+def check_point_value(point):
+    if int(point[:-1]) not in range(1, 11) and ord(point[-1]) not in range(97, 107):
+        raise ValueError('Start point must be like "1a" or "6d", in range 1a-10j.')
