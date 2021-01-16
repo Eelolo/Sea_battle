@@ -23,5 +23,13 @@ def new_battlefield():
 
 
 def check_point_value(point):
-    if int(point[:-1]) not in range(1, 11) and ord(point[-1]) not in range(97, 107):
-        raise ValueError('Start point must be like "1a" or "6d", in range 1a-10j.')
+    message = 'Start point must be like "1a" or "6d", in range 1a-10j.'
+
+    try:
+        integer = int(point[:-1])
+        letter = ord(point[-1])
+    except ValueError:
+        raise ValueError(message)
+
+    if integer not in range(1, 11) or letter not in range(97, 107):
+        raise ValueError(message)
