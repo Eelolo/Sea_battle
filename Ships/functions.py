@@ -2,6 +2,7 @@ from random import choice, randint
 from battlefield.classes import Cursor
 from battlefield.functions import check_point_value
 
+
 def new_ship(length, orientation=None, start_point=None):
     if orientation is not None and orientation in ('hor', 'vert'):
         orientation = orientation
@@ -84,3 +85,46 @@ def area_around_ship(ship):
     around_ship = list(set(around_ship) - set(ship))
 
     return around_ship
+
+
+def check_for_matches(array0, array1):
+    return set(array0) & set(array1) == set()
+
+
+def random_ships_set():
+    ships = {
+        4: {
+            0: [[], []]
+        },
+        3: {
+            0: [[], []],
+            1: [[], []]
+        },
+        2: {
+            0: [[], []],
+            1: [[], []],
+            2: [[], []]
+        },
+        1: {
+            0: [[], []],
+            1: [[], []],
+            2: [[], []],
+            3: [[], []]
+        }
+    }
+
+    all_ships = []
+    for length in range(1, 5):
+        for ship_idx in ships[length]:
+
+            while True:
+                ship = new_ship(length)
+                around_ship = area_around_ship(ship)
+                if check_for_matches(all_ships, ship):
+                    break
+
+            ships[length][ship_idx][0] = ship
+            ships[length][ship_idx][1] = around_ship
+            all_ships += ship + around_ship
+
+    return ships
