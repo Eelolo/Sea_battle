@@ -1,9 +1,11 @@
 from battlefield.classes import Battlefield
 from ships.functions import random_ships_set
+from config import SHIPS_EMPTY_SET
 
 
 class Player:
-    ships = {}
+    def __init__(self):
+        self.ships = SHIPS_EMPTY_SET
 
     def define_ship(self):
         ship = input()
@@ -14,7 +16,6 @@ class Player:
 
 
 class Opponent:
-    ships = {}
     played_moves = []
     last_move = ''
     last_move_is_damaged = bool
@@ -47,5 +48,3 @@ class Game:
     
     def start(self):
         pass
-
-
