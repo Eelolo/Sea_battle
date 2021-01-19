@@ -18,3 +18,13 @@ class Game:
     
     def start(self):
         pass
+
+
+class Player:
+    ships = {}
+
+    def define_ship(self):
+        pass
+
+    def define_move(self):
+        pass
