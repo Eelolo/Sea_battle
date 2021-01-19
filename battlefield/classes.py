@@ -1,5 +1,5 @@
 from .functions import new_battlefield, check_point_value
-from config import REVERSED_MOVES, PERPENDICULAR_MOVES
+from config.config import REVERSED_MOVES, PERPENDICULAR_MOVES
 
 
 class Battlefield:
