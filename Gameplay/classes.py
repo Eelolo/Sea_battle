@@ -4,8 +4,7 @@ from config import SHIPS_EMPTY_SET
 
 
 class Player:
-    def __init__(self):
-        self.ships = SHIPS_EMPTY_SET
+    ships = SHIPS_EMPTY_SET
 
     def define_ship(self):
         ship = input()
