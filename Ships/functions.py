@@ -1,6 +1,7 @@
 from random import choice, randint
 from battlefield.classes import Cursor
 from battlefield.functions import check_point_value
+from config import SHIPS_EMPTY_SET
 
 
 def new_ship(length, orientation=None, start_point=None):
@@ -92,26 +93,7 @@ def check_for_matches(array0, array1):
 
 
 def random_ships_set():
-    ships = {
-        4: {
-            0: [[], []]
-        },
-        3: {
-            0: [[], []],
-            1: [[], []]
-        },
-        2: {
-            0: [[], []],
-            1: [[], []],
-            2: [[], []]
-        },
-        1: {
-            0: [[], []],
-            1: [[], []],
-            2: [[], []],
-            3: [[], []]
-        }
-    }
+    ships = SHIPS_EMPTY_SET
 
     all_ships = []
     for length in range(1, 5):
