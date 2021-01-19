@@ -1,4 +1,5 @@
 from battlefield.classes import Battlefield
+from ships.functions import random_ships_set
 
 class Game:
     player_battlefield = Battlefield()
@@ -25,6 +26,19 @@ class Player:
 
     def define_ship(self):
         pass
+
+    def define_move(self):
+        pass
+
+
+class Opponent:
+    ships = {}
+    played_moves = []
+    last_move = ''
+    last_move_is_damaged = bool
+
+    def __init__(self):
+        self.ships = random_ships_set()
 
     def define_move(self):
         pass
