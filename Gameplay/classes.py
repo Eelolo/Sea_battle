@@ -1,6 +1,6 @@
 from battlefield.classes import Battlefield
 from ships.functions import random_ships_set
-from config import SHIPS_EMPTY_SET
+from config.config import SHIPS_EMPTY_SET
 
 
 class Player:
