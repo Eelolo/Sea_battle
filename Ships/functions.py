@@ -1,7 +1,7 @@
 from random import choice, randint
 from battlefield.classes import Cursor
 from battlefield.functions import check_point_value
-from config import SHIPS_EMPTY_SET
+from config.config import SHIPS_EMPTY_SET
 
 
 def new_ship(length, orientation=None, start_point=None):
