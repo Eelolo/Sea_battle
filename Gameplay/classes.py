@@ -6,7 +6,8 @@ class Player:
     ships = {}
 
     def define_ship(self):
-        pass
+        ship = input()
+        return ship
 
     def define_move(self):
         pass
