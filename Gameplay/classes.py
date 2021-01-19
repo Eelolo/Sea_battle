@@ -32,7 +32,9 @@ class Game:
     player = Player()
     opponent = Opponent()
 
-
+    def __init__(self):
+        self.start()
+    
     def place_ships(self):
         pass
 
