@@ -2,6 +2,7 @@ from battlefield.classes import Battlefield
 from ships.functions import random_ships_set, area_around_ship, check_for_matches
 from config.config import SHIPS_EMPTY_SET
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
+from .functions import check_length, is_straight_check, points_in_field_keys_check
 import os
 
 
@@ -9,7 +10,7 @@ class Player:
     ships = SHIPS_EMPTY_SET
 
     def define_ship(self):
-        ship = input().split(',')
+        ship = input().replace(' ', '').split(',')
         return ship
 
     def define_move(self):
@@ -36,15 +37,8 @@ class Game:
 
     def __init__(self):
         self.start()
-    
-    def place_ships(self):
-        pass
 
-    def realize_move(self):
-        pass
-
-    def player_ships_placing(self):
-
+    def __player_ships_placing(self):
         all_ships = []
         for length_idx, length in enumerate(self.player.ships):
             for ship_idx in self.player.ships[length]:
@@ -56,10 +50,17 @@ class Game:
 
                 while True:
                     ship = self.player.define_ship()
-                    around_ship = area_around_ship(ship)
-                    if check_for_matches(all_ships, ship):
+                    if not check_for_matches(all_ships, ship):
+                        print('Ship is too close to another.')
+                    if False not in (
+                            check_for_matches(all_ships, ship),
+                            points_in_field_keys_check(ship),
+                            check_length(ship, length),
+                            is_straight_check(ship)
+                    ):
                         break
-                    print('корабль слишком близко к другому')
+
+                around_ship = area_around_ship(ship)
 
                 self.player.ships[length][ship_idx][0] = ship
                 self.player.ships[length][ship_idx][1] = around_ship
@@ -72,4 +73,4 @@ class Game:
         pass
     
     def start(self):
-        pass
+        self.__player_ships_placing()
