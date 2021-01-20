@@ -3,21 +3,15 @@ from config.config import REVERSED_MOVES, PERPENDICULAR_MOVES
 
 
 class Battlefield:
-    def __init__(self):
-        self.field = new_battlefield()
-        self.amount_ships = 0
-        self.ships = []
-        self.fourdeck = []
-        self.tripledecks = []
-        self.doubledecks = []
-        self.singledecks = []
+    _field = new_battlefield()
+    _field_values_to_show = ''.join(_field.values())
 
     def change_value(self, point, value):
         check_point_value(point)
-        if '\n' in self.field[point]:
-            self.field[point] = ' {}\n'.format(value)
+        if '\n' in self._field[point]:
+            self._field[point] = ' {}\n'.format(value)
         else:
-            self.field[point] = ' {}'.format(value)
+            self._field[point] = ' {}'.format(value)
 
     def place_ship(self, ship):
         for point in ship:
@@ -28,12 +22,12 @@ class Battlefield:
 
     def __str__(self):
         return '    a b c d e f g h i j\n\n' + \
-               ''.join(self.field.values())
+               self._field_values_to_show
 
 
 class Cursor:
     _battlefield = Battlefield()
-    _field_keys = list(_battlefield.field.keys())
+    _field_keys = list(_battlefield._field.keys())
     _reversed_moves = REVERSED_MOVES
     _perpendicular_moves = PERPENDICULAR_MOVES
 
