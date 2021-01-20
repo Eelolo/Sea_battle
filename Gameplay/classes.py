@@ -9,7 +9,7 @@ class Player:
     ships = SHIPS_EMPTY_SET
 
     def define_ship(self):
-        ship = input()
+        ship = input().split(',')
         return ship
 
     def define_move(self):
@@ -55,7 +55,7 @@ class Game:
                 print(EXPLANATIONS[length_idx])
 
                 while True:
-                    ship = self.player.define_ship().split(',')
+                    ship = self.player.define_ship()
                     around_ship = area_around_ship(ship)
                     if check_for_matches(all_ships, ship):
                         break
