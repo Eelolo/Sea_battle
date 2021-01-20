@@ -3,8 +3,9 @@ from config.config import REVERSED_MOVES, PERPENDICULAR_MOVES
 
 
 class Battlefield:
-    _field = new_battlefield()
-    _field_values_to_show = ''.join(_field.values())
+    def __init__(self):
+        self._field = new_battlefield()
+        self._field_values_to_show = ''.join(self._field.values())
 
     def __update_field_values(self):
         self._field_values_to_show = ''.join(self._field.values())
