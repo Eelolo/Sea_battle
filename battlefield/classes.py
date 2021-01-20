@@ -6,12 +6,16 @@ class Battlefield:
     _field = new_battlefield()
     _field_values_to_show = ''.join(_field.values())
 
+    def __update_field_values(self):
+        self._field_values_to_show = ''.join(self._field.values())
+
     def change_value(self, point, value):
         check_point_value(point)
         if '\n' in self._field[point]:
             self._field[point] = ' {}\n'.format(value)
         else:
             self._field[point] = ' {}'.format(value)
+        self.__update_field_values()
 
     def place_ship(self, ship):
         for point in ship:
