@@ -4,7 +4,9 @@ def check_length(ship, length):
     if len(ship) != length:
         print('Length must be equal to {}.'.format(length))
 
-    return len(ship) == length
+        return False
+
+    return True
 
 
 def is_straight_check(ship):
@@ -30,5 +32,12 @@ def is_straight_check(ship):
 
     return True
 
+def points_in_field_keys_check(ship):
+    field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
 
+    if set(ship) - field_keys != set():
+        print('Entered points not from a battlefield.')
 
+        return False
+
+    return True
