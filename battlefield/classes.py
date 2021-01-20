@@ -19,6 +19,10 @@ class Battlefield:
         else:
             self.field[point] = ' {}'.format(value)
 
+    def place_ship(self, ship):
+        for point in ship:
+            self.change_value(point, '#')
+
     def make_move(self):
         pass
 
