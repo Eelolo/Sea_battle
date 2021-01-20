@@ -51,8 +51,8 @@ class Game:
 
                 os.system('cls')
                 # os.system('clear')
-                print(BATTLEFIELD.format(''.join(self.player_battlefield.field.values())))
-                print(EXPLANATIONS[list(EXPLANATIONS.keys())[length_idx]])
+                print(BATTLEFIELD.format(self.player_battlefield._field_values_to_show))
+                print(EXPLANATIONS[length_idx])
 
                 while True:
                     ship = self.player.define_ship().split(',')
