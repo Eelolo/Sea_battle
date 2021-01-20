@@ -64,8 +64,7 @@ class Game:
                 self.player.ships[length][ship_idx][0] = ship
                 self.player.ships[length][ship_idx][1] = around_ship
 
-                for point in ship:
-                    self.player_battlefield.change_value(point, '#')
+                self.player_battlefield.place_ship(ship)
 
                 all_ships += ship + around_ship
 
