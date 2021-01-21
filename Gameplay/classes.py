@@ -73,6 +73,11 @@ class Game:
         result = self.opponent_battlefield.make_move(move)
         print(result)
 
+    def opponent_move(self):
+        move = self.opponent.define_move()
+        self.opponent.last_move = self.player_battlefield.make_move(move)
+        print(self.opponent.last_move)
+
     def visualize_playing(self):
         pass
     
