@@ -2,7 +2,7 @@ from battlefield.classes import Battlefield
 from ships.functions import random_ships_set, area_around_ship, check_for_matches
 from config.config import SHIPS_EMPTY_SET
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
-from .functions import check_length, is_straight_check, points_in_field_keys_check
+from .functions import check_length, is_straight_check, points_in_field_keys_check, is_destroyed_check
 import os
 
 
@@ -68,14 +68,34 @@ class Game:
 
                 all_ships += ship + around_ship
 
+    def outline_ship(self, move, field_name):
+        around_ship = is_destroyed_check(move)
+
+        if around_ship:
+            result = 'Destroyed.'
+            for point in around_ship:
+                getattr(self, field_name).change_value(point, '.')
+
+            return result
+
     def player_move(self):
         move = self.player.define_move()
         result = self.opponent_battlefield.make_move(move)
+        is_destroyed = self.outline_ship(move, 'opponent_battlefield')
+
+        if is_destroyed:
+            result = is_destroyed
+
         print(result)
 
     def opponent_move(self):
         move = self.opponent.define_move()
         self.opponent.last_move = self.player_battlefield.make_move(move)
+        is_destroyed = self.outline_ship(move, 'player_battlefield')
+
+        if is_destroyed:
+            self.opponent.last_move = is_destroyed
+
         print(self.opponent.last_move)
 
     def visualize_playing(self):
