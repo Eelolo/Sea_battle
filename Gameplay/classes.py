@@ -20,7 +20,6 @@ class Player:
 class Opponent:
     played_moves = []
     last_move = ''
-    last_move_is_damaged = bool
 
     def __init__(self):
         self.ships = random_ships_set()
@@ -68,6 +67,11 @@ class Game:
                 self.player_battlefield.place_ship(ship)
 
                 all_ships += ship + around_ship
+
+    def player_move(self):
+        move = self.player.define_move()
+        result = self.opponent_battlefield.make_move(move)
+        print(result)
 
     def visualize_playing(self):
         pass
