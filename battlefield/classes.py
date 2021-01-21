@@ -22,8 +22,16 @@ class Battlefield:
         for point in ship:
             self.change_value(point, '#')
 
-    def make_move(self):
-        pass
+    def make_move(self, point):
+        if '#' in self._field[point]:
+            value = 'x'
+            result = 'Damaged.'
+        elif '~' in self._field[point]:
+            value = '.'
+            result = 'Miss.'
+
+        self.change_value(point, value)
+        return result
 
     def __str__(self):
         return '    a b c d e f g h i j\n\n' + \
