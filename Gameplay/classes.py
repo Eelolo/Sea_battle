@@ -2,7 +2,7 @@ from battlefield.classes import Battlefield
 from ships.functions import random_ships_set, area_around_ship, check_for_matches
 from config.config import SHIPS_EMPTY_SET
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
-from .functions import check_length, is_straight_check, points_in_field_keys_check, is_destroyed_check
+from .functions import check_length, is_straight_check, points_in_field_keys_check
 import os
 
 
@@ -14,7 +14,8 @@ class Player:
         return ship
 
     def define_move(self):
-        pass
+        move = input()
+        return move
 
 
 class Opponent:
@@ -68,8 +69,35 @@ class Game:
 
                 all_ships += ship + around_ship
 
-    def outline_ship(self, move, field_name):
-        around_ship = is_destroyed_check(move)
+    def opponent_ships_placing(self):
+        ships = self.opponent.ships
+
+        for length in range(1, 5):
+            for ship_idx in ships[length]:
+                self.opponent_battlefield.place_ship(ships[length][ship_idx][0])
+
+    def is_destroyed_check(self, move, player):
+        ships = getattr(self, player).ships
+        field = getattr(self, player + '_battlefield')._field
+
+        ship = []
+        for length in range(1, 5):
+            for ship_idx in ships[length]:
+                if move in ships[length][ship_idx][0]:
+                    ship = ships[length][ship_idx][0]
+                    around_ship = ships[length][ship_idx][1]
+                    break
+            else:
+                continue
+            break
+
+        if ship:
+            values = ''.join([field[point] for point in ship])
+            if '#' not in values:
+                return around_ship
+
+    def outline_ship(self, move, field_name, player):
+        around_ship = self.is_destroyed_check(move, player)
 
         if around_ship:
             result = 'Destroyed.'
@@ -81,25 +109,38 @@ class Game:
     def player_move(self):
         move = self.player.define_move()
         result = self.opponent_battlefield.make_move(move)
-        is_destroyed = self.outline_ship(move, 'opponent_battlefield')
+        is_destroyed = self.outline_ship(move, 'opponent_battlefield', 'opponent')
 
         if is_destroyed:
             result = is_destroyed
 
-        print(result)
+        return result
 
     def opponent_move(self):
         move = self.opponent.define_move()
         self.opponent.last_move = self.player_battlefield.make_move(move)
-        is_destroyed = self.outline_ship(move, 'player_battlefield')
+        is_destroyed = self.outline_ship(move, 'player_battlefield', 'player')
 
         if is_destroyed:
             self.opponent.last_move = is_destroyed
 
-        print(self.opponent.last_move)
+        return  self.opponent.last_move
 
     def visualize_playing(self):
-        pass
+        os.system('cls')
+        # os.system('clear'
+        print(self.opponent_battlefield)
+        while True:
+            result = self.player_move()
+            os.system('cls')
+            # os.system('clear')
+            print(self.opponent_battlefield)
+            print(result)
+
+
+
     
     def start(self):
-        self.__player_ships_placing()
+        # self.__player_ships_placing()
+        self.opponent_ships_placing()
+        self.visualize_playing()
