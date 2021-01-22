@@ -26,8 +26,16 @@ class Opponent:
     played_moves = []
     last_move = ''
 
+    def ships_placing(self):
+        ships = random_ships_set()
+
+        for length in ships:
+            for ship_idx in ships[length]:
+                setattr(self, SHIPS_ATTR_NAMES[length]+str(ship_idx), ships[length][ship_idx])
+
     def __init__(self):
         self.ships = random_ships_set()
+        self.ships_placing()
 
     def define_move(self):
         pass
@@ -44,8 +52,8 @@ class Game:
 
     def __player_ships_placing(self):
         all_ships = []
-        for length_idx, length in enumerate(self.player.ships):
-            for ship_idx in self.player.ships[length]:
+        for length_idx, length in enumerate(SHIPS_EMPTY_SET):
+            for ship_idx in SHIPS_EMPTY_SET[length]:
 
                 os.system('cls')
                 # os.system('clear')
@@ -71,11 +79,14 @@ class Game:
                 all_ships += ship.ship + around_ship
 
     def opponent_ships_placing(self):
-        ships = self.opponent.ships
+        ships = SHIPS_EMPTY_SET
 
         for length in range(1, 5):
             for ship_idx in ships[length]:
-                self.opponent_battlefield.place_ship(ships[length][ship_idx].ship)
+                ship = getattr(self.opponent, SHIPS_ATTR_NAMES[length]+str(ship_idx)).ship
+
+                self.opponent_battlefield.place_ship(ship)
+
 
     def is_destroyed_check(self, move, player):
         ships = getattr(self, player).ships
@@ -96,6 +107,7 @@ class Game:
             values = ''.join([field[point] for point in ship.ship])
             if '#' not in values:
                 return around_ship
+
 
     def outline_ship(self, move, field_name, player):
         around_ship = self.is_destroyed_check(move, player)
@@ -129,7 +141,7 @@ class Game:
 
     def visualize_playing(self):
         os.system('cls')
-        # os.system('clear'
+        # os.system('clear')
         print(self.opponent_battlefield)
         while True:
             result = self.player_move()
@@ -142,6 +154,6 @@ class Game:
 
     
     def start(self):
-        self.__player_ships_placing()
-        # self.opponent_ships_placing()
-        # self.visualize_playing()
+        # self.__player_ships_placing()
+        self.opponent_ships_placing()
+        self.visualize_playing()
