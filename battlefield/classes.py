@@ -23,12 +23,12 @@ class Battlefield:
             self.change_value(point, '#')
 
     def make_move(self, point):
+        value = '.'
+        result = 'Miss.'
+
         if '#' in self._field[point]:
             value = 'x'
             result = 'Damaged.'
-        elif '~' in self._field[point]:
-            value = '.'
-            result = 'Miss.'
 
         self.change_value(point, value)
         return result
