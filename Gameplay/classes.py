@@ -1,14 +1,17 @@
 from battlefield.classes import Battlefield
 from ships.classes import Ship
 from ships.functions import random_ships_set, check_for_matches
-from config.config import SHIPS_EMPTY_SET
+from config.config import SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
 from .functions import check_length, is_straight_check, points_in_field_keys_check
 import os
 
 
 class Player:
-    ships = SHIPS_EMPTY_SET
+    def __init__(self):
+        for length in SHIPS_EMPTY_SET:
+            for ship_idx in SHIPS_EMPTY_SET[length]:
+                setattr(self, SHIPS_ATTR_NAMES[length]+str(ship_idx), None)
 
     def define_ship(self):
         ship = input().replace(' ', '').split(',')
@@ -51,18 +54,18 @@ class Game:
 
                 while True:
                     ship = Ship(self.player.define_ship())
-                    if not check_for_matches(all_ships, ship):
+                    if not check_for_matches(all_ships, ship.ship):
                         print('Ship is too close to another.')
                     if False not in (
-                            check_for_matches(all_ships, ship),
-                            points_in_field_keys_check(ship),
-                            check_length(ship, length),
-                            is_straight_check(ship)
+                            check_for_matches(all_ships, ship.ship),
+                            points_in_field_keys_check(ship.ship),
+                            check_length(ship.ship, length),
+                            is_straight_check(ship.ship)
                     ):
                         break
 
                 around_ship = ship.around_ship
-                self.player.ships[length][ship_idx] = ship
+                setattr(self.player, SHIPS_ATTR_NAMES[length]+str(ship_idx), ship)
                 self.player_battlefield.place_ship(ship.ship)
 
                 all_ships += ship.ship + around_ship
@@ -139,6 +142,6 @@ class Game:
 
     
     def start(self):
-        # self.__player_ships_placing()
-        self.opponent_ships_placing()
-        self.visualize_playing()
+        self.__player_ships_placing()
+        # self.opponent_ships_placing()
+        # self.visualize_playing()

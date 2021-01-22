@@ -32,3 +32,10 @@ SHIPS_EMPTY_SET = {
             3: []
         }
     }
+
+SHIPS_ATTR_NAMES = {
+    4:'fourdeck',
+    3:'tripledeck',
+    2:'doubledeck',
+    1:'singledeck'
+}
