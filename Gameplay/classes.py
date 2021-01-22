@@ -1,5 +1,6 @@
 from battlefield.classes import Battlefield
-from ships.functions import random_ships_set, area_around_ship, check_for_matches
+from ships.classes import Ship
+from ships.functions import random_ships_set, check_for_matches
 from config.config import SHIPS_EMPTY_SET
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
 from .functions import check_length, is_straight_check, points_in_field_keys_check
@@ -49,7 +50,7 @@ class Game:
                 print(EXPLANATIONS[length_idx])
 
                 while True:
-                    ship = self.player.define_ship()
+                    ship = Ship(self.player.define_ship())
                     if not check_for_matches(all_ships, ship):
                         print('Ship is too close to another.')
                     if False not in (
@@ -60,21 +61,18 @@ class Game:
                     ):
                         break
 
-                around_ship = area_around_ship(ship)
+                around_ship = ship.around_ship
+                self.player.ships[length][ship_idx] = ship
+                self.player_battlefield.place_ship(ship.ship)
 
-                self.player.ships[length][ship_idx][0] = ship
-                self.player.ships[length][ship_idx][1] = around_ship
-
-                self.player_battlefield.place_ship(ship)
-
-                all_ships += ship + around_ship
+                all_ships += ship.ship + around_ship
 
     def opponent_ships_placing(self):
         ships = self.opponent.ships
 
         for length in range(1, 5):
             for ship_idx in ships[length]:
-                self.opponent_battlefield.place_ship(ships[length][ship_idx][0])
+                self.opponent_battlefield.place_ship(ships[length][ship_idx].ship)
 
     def is_destroyed_check(self, move, player):
         ships = getattr(self, player).ships
@@ -83,16 +81,16 @@ class Game:
         ship = []
         for length in range(1, 5):
             for ship_idx in ships[length]:
-                if move in ships[length][ship_idx][0]:
-                    ship = ships[length][ship_idx][0]
-                    around_ship = ships[length][ship_idx][1]
+                if move in ships[length][ship_idx].ship:
+                    ship = ships[length][ship_idx]
+                    around_ship = ship.around_ship
                     break
             else:
                 continue
             break
 
         if ship:
-            values = ''.join([field[point] for point in ship])
+            values = ''.join([field[point] for point in ship.ship])
             if '#' not in values:
                 return around_ship
 
