@@ -29,6 +29,8 @@ class Battlefield:
         if '#' in self._field[point]:
             value = 'x'
             result = 'Damaged.'
+        elif 'x' in self._field[point]:
+            value = 'x'
 
         self.change_value(point, value)
         return result

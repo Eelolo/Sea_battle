@@ -93,10 +93,11 @@ class Game:
         field = getattr(self, player + '_battlefield')._field
         player_object = getattr(self, player)
 
-        ship = None
+        around_ship = None
         for length in range(1, 5):
             for ship_idx in ships[length]:
-                ship = getattr(player_object, SHIPS_ATTR_NAMES[length]+str(ship_idx))
+                ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
+                ship = getattr(player_object, ship_attr_name)
                 if move in ship.ship:
                     around_ship = ship.around_ship
                     break
@@ -104,15 +105,19 @@ class Game:
                 continue
             break
 
-        if ship:
+        if around_ship:
             field_values = ''.join([field[point] for point in ship.ship])
-            if '#' not in field_values:
-                return around_ship
+            if '#' not in field_values and ship.destroyed == False:
+                return around_ship, player_object, ship_attr_name
 
     def outline_ship(self, move, field_name, player):
-        around_ship = self.is_destroyed_check(move, player)
+        check_result = self.is_destroyed_check(move, player)
 
-        if around_ship:
+        if check_result:
+            ship_object = getattr(check_result[1], check_result[2])
+            setattr(ship_object, 'destroyed', True)
+
+            around_ship = check_result[0]
             result = 'Destroyed.'
             for point in around_ship:
                 getattr(self, field_name).change_value(point, '.')
