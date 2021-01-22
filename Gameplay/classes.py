@@ -11,7 +11,8 @@ class Player:
     def __init__(self):
         for length in SHIPS_EMPTY_SET:
             for ship_idx in SHIPS_EMPTY_SET[length]:
-                setattr(self, SHIPS_ATTR_NAMES[length]+str(ship_idx), None)
+                ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
+                setattr(self, ship_attr_name, None)
 
     def define_ship(self):
         ship = input().replace(' ', '').split(',')
@@ -31,7 +32,9 @@ class Opponent:
 
         for length in ships:
             for ship_idx in ships[length]:
-                setattr(self, SHIPS_ATTR_NAMES[length]+str(ship_idx), ships[length][ship_idx])
+                ship_attr_name = SHIPS_ATTR_NAMES[length] + str(ship_idx)
+                ship = ships[length][ship_idx]
+                setattr(self, ship_attr_name, ship)
 
     def __init__(self):
         self.ships = random_ships_set()
@@ -73,7 +76,10 @@ class Game:
                         break
 
                 around_ship = ship.around_ship
-                setattr(self.player, SHIPS_ATTR_NAMES[length]+str(ship_idx), ship)
+
+                ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
+                setattr(self.player, ship_attr_name, ship)
+
                 self.player_battlefield.place_ship(ship.ship)
 
                 all_ships += ship.ship + around_ship
@@ -81,9 +87,10 @@ class Game:
     def opponent_ships_placing(self):
         ships = SHIPS_EMPTY_SET
 
-        for length in range(1, 5):
+        for length in ships:
             for ship_idx in ships[length]:
-                ship = getattr(self.opponent, SHIPS_ATTR_NAMES[length]+str(ship_idx)).ship
+                ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
+                ship = getattr(self.opponent, ship_attr_name).ship
 
                 self.opponent_battlefield.place_ship(ship)
 
