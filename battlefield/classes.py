@@ -39,16 +39,18 @@ class Battlefield:
 
 
 class Cursor:
-    _battlefield = Battlefield()
-    _field_keys = list(_battlefield._field.keys())
     _reversed_moves = REVERSED_MOVES
     _perpendicular_moves = PERPENDICULAR_MOVES
 
     def __init__(self, start_point=None):
+        self._battlefield = Battlefield()
+        self._field_keys = list(self._battlefield._field.keys())
+
         if start_point is not None:
             self.point = start_point
         else:
             self.point = '1a'
+
         self._battlefield.change_value(self.point, 'X')
         self._point_key_idx = self._field_keys.index(self.point)
 
