@@ -1,3 +1,5 @@
+METHODS = ['up', 'down', 'left', 'right']
+
 REVERSED_MOVES = {
             'right': 'left',
             'left': 'right',
