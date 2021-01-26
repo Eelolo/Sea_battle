@@ -95,3 +95,18 @@ class Cursor:
         check_point_value(point)
         self.point = point
         return self.point
+
+    def check_move_result(self, move):
+        if move not in ('up', 'down', 'left', 'right'):
+            raise AttributeError("Move must be in: 'up', 'down', 'left', 'right'")
+
+        point = self.point
+
+        getattr(self, move)()
+
+        result = self.point
+
+        if self.point != point:
+            getattr(self, REVERSED_MOVES[move])()
+
+        return result
