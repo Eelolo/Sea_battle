@@ -238,7 +238,7 @@ class Game:
             return result, around_ship
 
     def player_move(self):
-        move = ''
+        move = self.player.define_move()
         while not point_in_field_keys_check(move):
             move = self.player.define_move()
 
@@ -303,9 +303,26 @@ class Game:
             self.print_fields(
                 player_result
             )
+            self.end_check()
 
         if player == 'player':
             return result
+
+    def end(self, player):
+        if player == 'player':
+            message = '        You won!'
+        else:
+            message = '         Defeat.'
+
+        print(''.join(message))
+
+        exit()
+
+    def end_check(self):
+        if '#' not in self.player_battlefield._field_values_to_show:
+            self.end('opponent')
+        elif '#' not in self.opponent_battlefield._field_values_to_show:
+            self.end('player')
 
     def game(self):
         player_result = ''
@@ -319,6 +336,7 @@ class Game:
             self.print_fields(
                 player_result
             )
+            self.end_check()
             player_result = self.repeat_move('player', player_result)
 
             time.sleep(1.0)
@@ -327,6 +345,7 @@ class Game:
             self.print_fields(
                 player_result
             )
+            self.end_check()
             self.repeat_move('opponent')
 
     def start(self):
