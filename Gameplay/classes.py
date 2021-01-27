@@ -5,6 +5,7 @@ from config.config import (
     SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, REVERSED_MOVES, PERPENDICULAR_MOVES, SEARCH_PLAN
 )
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
+from config.templates.game import GAME
 from .functions import check_length, is_straight_check, points_in_field_keys_check
 from random import choice
 import os
@@ -253,20 +254,67 @@ class Game:
             self.opponent.last_move_result = is_destroyed[0]
             self.opponent.area_to_exclude = is_destroyed[1]
 
-        return self.opponent.last_move_result
+        return move, self.opponent.last_move_result
+
+    def print_fields(self, player_result):
+        if self.opponent.last_move_point:
+            opp_info = 'Opponent`s move: {}. {}'.format(
+                self.opponent.last_move_point, self.opponent.last_move_result
+            )
+        else:
+            opp_info = ''
+
+        if not player_result:
+            player_result = ''
+
+        print(
+            GAME.format(
+                self.player_battlefield, opp_info, self.opponent_battlefield, player_result
+            )
+        )
+
+    def repeat_move(self, player, player_result=None):
+        if player == 'player':
+            result = player_result
+        else:
+            result = self.opponent.last_move_result
+
+        while result in ('Damaged.', 'Destroyed.'):
+            if player == 'player':
+                result = self.player_move()
+            else:
+                time.sleep(1.0)
+                self.opponent_move()
+                result = self.opponent.last_move_result
+
+            self.print_fields(
+                player_result
+            )
+
+        if player == 'player':
+            return result
 
     def game(self):
+        player_result = ''
+
         os.system('cls')
-        # os.system('clear')
-        print(self.player_battlefield)
+        self.print_fields(
+            player_result
+        )
         while True:
-            # input()
+            player_result = self.player_move()
+            self.print_fields(
+                player_result
+            )
+            player_result = self.repeat_move('player', player_result)
+
             time.sleep(1.0)
-            result = self.opponent_move()
-            print(result)
             os.system('cls')
-            # os.system('clear')
-            print(self.player_battlefield)
+            self.opponent_move()
+            self.print_fields(
+                player_result
+            )
+            self.repeat_move('opponent')
 
     def start(self):
         # self.__player_ships_placing()
