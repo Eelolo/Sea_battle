@@ -41,3 +41,13 @@ def points_in_field_keys_check(ship):
         return False
 
     return True
+
+def point_in_field_keys_check(point):
+    field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
+
+    if point not in field_keys:
+        print('Entered point not from a battlefield.')
+
+        return False
+
+    return True

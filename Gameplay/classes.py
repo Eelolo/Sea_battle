@@ -6,7 +6,9 @@ from config.config import (
 )
 from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
 from config.templates.game import GAME
-from .functions import check_length, is_straight_check, points_in_field_keys_check
+from .functions import (
+    check_length, is_straight_check, points_in_field_keys_check , point_in_field_keys_check
+)
 from random import choice
 import os
 import time
@@ -236,7 +238,10 @@ class Game:
             return result, around_ship
 
     def player_move(self):
-        move = self.player.define_move()
+        move = ''
+        while not point_in_field_keys_check(move):
+            move = self.player.define_move()
+
         result = self.opponent_battlefield.make_move(move)
         is_destroyed = self.outline_ship(move, 'opponent_battlefield', 'opponent')
 
