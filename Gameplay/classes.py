@@ -153,6 +153,7 @@ class Game:
     def __init__(self):
         self.player_battlefield = Battlefield()
         self.opponent_battlefield = Battlefield()
+        self.hidden_field = Battlefield()
         self.player = Player()
         self.opponent = Opponent()
         self.start()
@@ -242,6 +243,13 @@ class Game:
         if is_destroyed:
             result = is_destroyed[0]
 
+        for key in self.opponent_battlefield._field:
+            if self.hidden_field._field[key] != self.opponent_battlefield._field[key]:
+                if 'x' in self.opponent_battlefield._field[key]:
+                    self.hidden_field.change_value(key, 'x')
+                elif '.' in self.opponent_battlefield._field[key]:
+                    self.hidden_field.change_value(key, '.')
+
         return result
 
     def opponent_move(self):
@@ -269,7 +277,7 @@ class Game:
 
         print(
             GAME.format(
-                self.player_battlefield, opp_info, self.opponent_battlefield, player_result
+                self.player_battlefield, opp_info, self.hidden_field, player_result
             )
         )
 
@@ -309,7 +317,7 @@ class Game:
             player_result = self.repeat_move('player', player_result)
 
             time.sleep(1.0)
-            os.system('cls')
+            # os.system('cls')
             self.opponent_move()
             self.print_fields(
                 player_result
