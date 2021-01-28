@@ -300,9 +300,7 @@ class Game:
                 self.opponent_move()
                 result = self.opponent.last_move_result
 
-            self.print_fields(
-                player_result
-            )
+            self.print_fields(player_result)
             self.end_check()
 
         if player == 'player':
@@ -328,37 +326,23 @@ class Game:
         player_result = ''
 
         os.system('cls')
-        self.print_fields(
-            player_result
-        )
+        # os.system('clear')
+        self.print_fields(player_result)
         while True:
             player_result = self.player_move()
-            self.print_fields(
-                player_result
-            )
+            self.print_fields(player_result)
             self.end_check()
             player_result = self.repeat_move('player', player_result)
 
             time.sleep(1.0)
-            # os.system('cls')
+            os.system('cls')
+            # os.system('clear')
             self.opponent_move()
-            self.print_fields(
-                player_result
-            )
+            self.print_fields(player_result)
             self.end_check()
             self.repeat_move('opponent')
 
     def start(self):
-        # self.__player_ships_placing()
-        ships = random_ships_set()
-
-        for length in ships:
-            for ship_idx in ships[length]:
-                ship_attr_name = SHIPS_ATTR_NAMES[length] + str(ship_idx)
-                ship = ships[length][ship_idx]
-                setattr(self.player, ship_attr_name, ship)
-
-                self.player_battlefield.place_ship(ship.ship)
-
+        self.__player_ships_placing()
         self.opponent_ships_placing()
         self.game()
