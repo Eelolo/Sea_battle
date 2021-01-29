@@ -34,21 +34,16 @@ def is_straight_check(points):
 
     return True
 
-def points_in_field_keys_check(points):
+
+def points_on_field_check(points):
     field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
+    message = 'Entered point not from a field.'
+
+    if len(points) > 1:
+        message = message.replace('point', 'points')
 
     if set(points) - field_keys != set():
-        print('Entered points not from a field.')
-
-        return False
-
-    return True
-
-def point_in_field_keys_check(point):
-    field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
-
-    if point not in field_keys:
-        print('Entered point not from a field.')
+        print(message)
 
         return False
 

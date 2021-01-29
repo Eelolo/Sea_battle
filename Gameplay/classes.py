@@ -7,7 +7,7 @@ from config.config import (
 from config.templates.defining_ships import FIELD, EXPLANATIONS
 from config.templates.game import GAME
 from .functions import (
-    check_length, is_straight_check, points_in_field_keys_check , point_in_field_keys_check
+    check_length, is_straight_check, points_on_field_check
 )
 from random import choice
 import os
@@ -22,12 +22,20 @@ class Player:
                 setattr(self, ship_attr_name, None)
 
     def define_ship(self):
-        points = input().replace(' ', '').split(',')
+        while True:
+            points = input().replace(' ', '').split(',')
+            if points_on_field_check(points):
+                break
+
         return points
 
     def define_move(self):
-        move = input()
-        return move
+        while True:
+            point = input()
+            if points_on_field_check(point):
+                break
+
+        return point
 
 
 class Opponent:
@@ -176,7 +184,6 @@ class Game:
                         print('Ship is too close to another.')
                     if False not in (
                             check_for_matches(all_ships, points),
-                            points_in_field_keys_check(points),
                             check_length(points, length),
                             is_straight_check(points)
                     ):
@@ -240,9 +247,6 @@ class Game:
 
     def player_move(self):
         move = self.player.define_move()
-        while not point_in_field_keys_check(move):
-            move = self.player.define_move()
-
         result = self.opponent_field.make_move(move)
         is_destroyed = self.outline_ship(move, 'opponent_field', 'opponent')
 
