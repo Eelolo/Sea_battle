@@ -70,7 +70,7 @@ class Ship:
 
     def __str__(self):
         cur = Cursor()
-        cur._battlefield.place_ship(self.ship)
+        cur._field.place_ship(self.ship)
 
         return '    a b c d e f g h i j\n\n' + \
-               cur._battlefield._field_values_to_show
+               cur._field._field_values_to_show

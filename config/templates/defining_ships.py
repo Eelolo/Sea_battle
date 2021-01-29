@@ -1,4 +1,4 @@
-BATTLEFIELD = '\n     Your battlefield\n' \
+FIELD = '\n     Your battlefield\n' \
               '    a b c d e f g h i j\n\n' \
               '{}'
 

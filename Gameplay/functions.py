@@ -36,7 +36,7 @@ def points_in_field_keys_check(ship):
     field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
 
     if set(ship) - field_keys != set():
-        print('Entered points not from a battlefield.')
+        print('Entered points not from a field.')
 
         return False
 
@@ -46,7 +46,7 @@ def point_in_field_keys_check(point):
     field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
 
     if point not in field_keys:
-        print('Entered point not from a battlefield.')
+        print('Entered point not from a field.')
 
         return False
 

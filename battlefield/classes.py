@@ -1,10 +1,10 @@
-from .functions import new_battlefield, check_point_value
+from .functions import new_field, check_point_value
 from config.config import REVERSED_MOVES, PERPENDICULAR_MOVES
 
 
 class Battlefield:
     def __init__(self):
-        self._field = new_battlefield()
+        self._field = new_field()
         self._field_values_to_show = ''.join(self._field.values())
 
     def __update_field_values(self):
@@ -45,24 +45,24 @@ class Cursor:
     _perpendicular_moves = PERPENDICULAR_MOVES
 
     def __init__(self, start_point=None):
-        self._battlefield = Battlefield()
-        self._field_keys = list(self._battlefield._field.keys())
+        self._field = Battlefield()
+        self._field_keys = list(self._field._field.keys())
 
         if start_point is not None:
             self.point = start_point
         else:
             self.point = '1a'
 
-        self._battlefield.change_value(self.point, 'X')
+        self._field.change_value(self.point, 'X')
         self._point_key_idx = self._field_keys.index(self.point)
 
     def __setattr__(self, key, value):
         if key == 'point':
             check_point_value(value)
             if self.__dict__.get('point') is not None:
-                self._battlefield.change_value(self.__dict__.get('point'), '~')
+                self._field.change_value(self.__dict__.get('point'), '~')
                 self._point_key_idx = self._field_keys.index(value)
-            self._battlefield.change_value(value, 'X')
+            self._field.change_value(value, 'X')
 
         self.__dict__[key] = value
 

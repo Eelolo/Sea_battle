@@ -4,7 +4,7 @@ from ships.functions import random_ships_set, check_for_matches
 from config.config import (
     SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, REVERSED_MOVES, PERPENDICULAR_MOVES, SEARCH_PLAN
 )
-from config.templates.defining_ships import BATTLEFIELD, EXPLANATIONS
+from config.templates.defining_ships import FIELD, EXPLANATIONS
 from config.templates.game import GAME
 from .functions import (
     check_length, is_straight_check, points_in_field_keys_check , point_in_field_keys_check
@@ -153,8 +153,8 @@ class Opponent:
 
 class Game:
     def __init__(self):
-        self.player_battlefield = Battlefield()
-        self.opponent_battlefield = Battlefield()
+        self.player_field = Battlefield()
+        self.opponent_field = Battlefield()
         self.hidden_field = Battlefield()
         self.player = Player()
         self.opponent = Opponent()
@@ -167,7 +167,7 @@ class Game:
 
                 os.system('cls')
                 # os.system('clear')
-                print(BATTLEFIELD.format(self.player_battlefield._field_values_to_show))
+                print(FIELD.format(self.player_field._field_values_to_show))
                 print(EXPLANATIONS[length_idx])
 
                 while True:
@@ -187,7 +187,7 @@ class Game:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
                 setattr(self.player, ship_attr_name, ship)
 
-                self.player_battlefield.place_ship(ship.ship)
+                self.player_field.place_ship(ship.ship)
 
                 all_ships += ship.ship + around_ship
 
@@ -199,11 +199,11 @@ class Game:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
                 ship = getattr(self.opponent, ship_attr_name).ship
 
-                self.opponent_battlefield.place_ship(ship)
+                self.opponent_field.place_ship(ship)
 
     def is_destroyed_check(self, move, player):
         ships = SHIPS_EMPTY_SET
-        field = getattr(self, player + '_battlefield')._field
+        field = getattr(self, player + '_field')._field
         player_object = getattr(self, player)
 
         around_ship = None
@@ -242,17 +242,17 @@ class Game:
         while not point_in_field_keys_check(move):
             move = self.player.define_move()
 
-        result = self.opponent_battlefield.make_move(move)
-        is_destroyed = self.outline_ship(move, 'opponent_battlefield', 'opponent')
+        result = self.opponent_field.make_move(move)
+        is_destroyed = self.outline_ship(move, 'opponent_field', 'opponent')
 
         if is_destroyed:
             result = is_destroyed[0]
 
-        for key in self.opponent_battlefield._field:
-            if self.hidden_field._field[key] != self.opponent_battlefield._field[key]:
-                if 'x' in self.opponent_battlefield._field[key]:
+        for key in self.opponent_field._field:
+            if self.hidden_field._field[key] != self.opponent_field._field[key]:
+                if 'x' in self.opponent_field._field[key]:
                     self.hidden_field.change_value(key, 'x')
-                elif '.' in self.opponent_battlefield._field[key]:
+                elif '.' in self.opponent_field._field[key]:
                     self.hidden_field.change_value(key, '.')
 
         return result
@@ -260,8 +260,8 @@ class Game:
     def opponent_move(self):
         move = self.opponent.define_move()
         self.opponent.last_move_point = move
-        self.opponent.last_move_result = self.player_battlefield.make_move(move)
-        is_destroyed = self.outline_ship(move, 'player_battlefield', 'player')
+        self.opponent.last_move_result = self.player_field.make_move(move)
+        is_destroyed = self.outline_ship(move, 'player_field', 'player')
 
         if is_destroyed:
             self.opponent.last_move_result = is_destroyed[0]
@@ -282,7 +282,7 @@ class Game:
 
         print(
             GAME.format(
-                self.player_battlefield, opp_info, self.hidden_field, player_result
+                self.player_field, opp_info, self.hidden_field, player_result
             )
         )
 
@@ -317,9 +317,9 @@ class Game:
         exit()
 
     def end_check(self):
-        if '#' not in self.player_battlefield._field_values_to_show:
+        if '#' not in self.player_field._field_values_to_show:
             self.end('opponent')
-        elif '#' not in self.opponent_battlefield._field_values_to_show:
+        elif '#' not in self.opponent_field._field_values_to_show:
             self.end('player')
 
     def game(self):
