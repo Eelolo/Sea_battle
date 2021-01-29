@@ -2,7 +2,7 @@ from battlefield.classes import Battlefield, Cursor
 from ships.classes import Ship
 from ships.functions import random_ships_set, check_for_matches
 from config.config import (
-    SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, REVERSED_MOVES, PERPENDICULAR_MOVES, SEARCH_PLAN
+    SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, PERPENDICULAR, SEARCH_PLAN
 )
 from config.templates.defining_ships import FIELD, EXPLANATIONS
 from config.templates.game import GAME
@@ -76,7 +76,7 @@ class Opponent:
 
         for method in self.cur_methods:
             if self.cur_methods.count(method) >= 2:
-                self.discarded_methods.extend(PERPENDICULAR_MOVES[method])
+                self.discarded_methods.extend(PERPENDICULAR[method])
                 if self.cursor.check_move_result(self.cur_methods[-1]) == self.cursor.point:
                     self.last_move_result = 'Miss.'
                     self.cursor.move(self.discarded_points[-1])

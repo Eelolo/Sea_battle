@@ -1,13 +1,13 @@
 METHODS = ['up', 'down', 'left', 'right']
 
-REVERSED_MOVES = {
+REVERSED = {
             'right': 'left',
             'left': 'right',
             'down': 'up',
             'up': 'down'
         }
 
-PERPENDICULAR_MOVES = {
+PERPENDICULAR = {
             'right': ('up', 'down'),
             'left': ('up', 'down'),
             'down': ('right', 'left'),

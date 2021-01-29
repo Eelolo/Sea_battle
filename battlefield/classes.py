@@ -1,5 +1,5 @@
 from .functions import new_field, check_point_value
-from config.config import REVERSED_MOVES, PERPENDICULAR_MOVES
+from config.config import REVERSED, PERPENDICULAR
 
 
 class Battlefield:
@@ -41,8 +41,8 @@ class Battlefield:
 
 
 class Cursor:
-    _reversed_moves = REVERSED_MOVES
-    _perpendicular_moves = PERPENDICULAR_MOVES
+    _reversed_moves = REVERSED
+    _perpendicular_moves = PERPENDICULAR
 
     def __init__(self, start_point=None):
         self._field = Battlefield()
@@ -107,6 +107,6 @@ class Cursor:
         result = self.point
 
         if self.point != point:
-            getattr(self, REVERSED_MOVES[move])()
+            getattr(self, REVERSED[move])()
 
         return result
