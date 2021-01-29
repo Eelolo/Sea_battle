@@ -60,10 +60,10 @@ def random_ships_set():
             while True:
                 ship = Ship(new_ship(length))
                 around_ship = ship.around_ship
-                if check_for_matches(all_ships, ship.ship):
+                if check_for_matches(all_ships, ship.points):
                     break
 
             ships[length][ship_idx] = ship
-            all_ships += ship.ship + around_ship
+            all_ships += ship.points + around_ship
 
     return ships

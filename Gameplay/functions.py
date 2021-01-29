@@ -1,7 +1,7 @@
 from battlefield.classes import Cursor
 
-def check_length(ship, length):
-    if len(ship) != length:
+def check_length(points, length):
+    if len(points) != length:
         print('Length must be equal to {}.'.format(length))
 
         return False
@@ -9,22 +9,22 @@ def check_length(ship, length):
     return True
 
 
-def is_straight_check(ship):
-    if len(ship) == 1:
+def is_straight_check(points):
+    if len(points) == 1:
         return True
-    elif '' in ship:
+    elif '' in points:
         return False
 
     field_keys = Cursor()._field_keys
-    point_difference = field_keys.index(ship[1]) - field_keys.index(ship[0])
+    point_difference = field_keys.index(points[1]) - field_keys.index(points[0])
 
     if point_difference in (1, -1):
         orientation = 'hor'
     else:
         orientation = 'vert'
 
-    for idx in range(len(ship) - 1):
-        point_difference = field_keys.index(ship[idx + 1]) - field_keys.index(ship[idx])
+    for idx in range(len(points) - 1):
+        point_difference = field_keys.index(points[idx + 1]) - field_keys.index(points[idx])
 
         if orientation == 'hor' and point_difference not in (1, -1) or \
                 orientation == 'vert' and point_difference not in (11, -11):
@@ -34,10 +34,10 @@ def is_straight_check(ship):
 
     return True
 
-def points_in_field_keys_check(ship):
+def points_in_field_keys_check(points):
     field_keys = set(Cursor()._field_keys) - set(map(lambda x: str(x), range(1, 11)))
 
-    if set(ship) - field_keys != set():
+    if set(points) - field_keys != set():
         print('Entered points not from a field.')
 
         return False

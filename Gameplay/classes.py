@@ -22,8 +22,8 @@ class Player:
                 setattr(self, ship_attr_name, None)
 
     def define_ship(self):
-        ship = input().replace(' ', '').split(',')
-        return ship
+        points = input().replace(' ', '').split(',')
+        return points
 
     def define_move(self):
         move = input()
@@ -188,9 +188,9 @@ class Game:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
                 setattr(self.player, ship_attr_name, ship)
 
-                self.player_field.place_ship(ship.ship)
+                self.player_field.place_ship(ship.points)
 
-                all_ships += ship.ship + around_ship
+                all_ships += ship.points + around_ship
 
     def opponent_ships_placing(self):
         ships = SHIPS_EMPTY_SET
@@ -198,9 +198,9 @@ class Game:
         for length in ships:
             for ship_idx in ships[length]:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
-                ship = getattr(self.opponent, ship_attr_name).ship
+                points = getattr(self.opponent, ship_attr_name).points
 
-                self.opponent_field.place_ship(ship)
+                self.opponent_field.place_ship(points)
 
     def is_destroyed_check(self, move, player):
         ships = SHIPS_EMPTY_SET
@@ -212,7 +212,7 @@ class Game:
             for ship_idx in ships[length]:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
                 ship = getattr(player_object, ship_attr_name)
-                if move in ship.ship:
+                if move in ship.points:
                     around_ship = ship.around_ship
                     break
             else:
@@ -220,7 +220,7 @@ class Game:
             break
 
         if around_ship:
-            field_values = ''.join([field[point] for point in ship.ship])
+            field_values = ''.join([field[point] for point in ship.points])
             if '#' not in field_values and ship.destroyed == False:
                 return around_ship, player_object, ship_attr_name
 
