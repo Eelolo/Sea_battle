@@ -5,10 +5,6 @@ from config.config import REVERSED, PERPENDICULAR
 class Battlefield:
     def __init__(self):
         self._field = new_field()
-        self._field_values_to_show = ''.join(self._field.values())
-
-    def __update_field_values(self):
-        self._field_values_to_show = ''.join(self._field.values())
 
     def change_value(self, point, value):
         check_point_value(point)
@@ -16,7 +12,6 @@ class Battlefield:
             self._field[point] = ' {}\n'.format(value)
         else:
             self._field[point] = ' {}'.format(value)
-        self.__update_field_values()
 
     def place_ship(self, ship):
         for point in ship:
@@ -37,7 +32,7 @@ class Battlefield:
 
     def __str__(self):
         return '    a b c d e f g h i j\n\n' + \
-               self._field_values_to_show
+               ''.join(self._field.values())
 
 
 class Cursor:

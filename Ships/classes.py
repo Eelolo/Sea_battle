@@ -72,5 +72,4 @@ class Ship:
         cur = Cursor()
         cur._field.place_ship(self.ship)
 
-        return '    a b c d e f g h i j\n\n' + \
-               cur._field._field_values_to_show
+        return cur._field

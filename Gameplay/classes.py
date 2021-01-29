@@ -167,7 +167,7 @@ class Game:
 
                 os.system('cls')
                 # os.system('clear')
-                print(FIELD.format(self.player_field._field_values_to_show))
+                print(FIELD.format(self.player_field))
                 print(EXPLANATIONS[length_idx])
 
                 while True:
@@ -317,9 +317,9 @@ class Game:
         exit()
 
     def end_check(self):
-        if '#' not in self.player_field._field_values_to_show:
+        if '#' not in str(self.player_field):
             self.end('opponent')
-        elif '#' not in self.opponent_field._field_values_to_show:
+        elif '#' not in str(self.opponent_field):
             self.end('player')
 
     def game(self):

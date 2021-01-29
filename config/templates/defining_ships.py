@@ -1,6 +1,5 @@
 FIELD = '\n     Your battlefield\n' \
-              '    a b c d e f g h i j\n\n' \
-              '{}'
+        '{}'
 
 EXPLANATIONS = [
     'Place the battleship. Length - 4 points.\nSet points like "3b,3c,3d,3e" or "2b,3b,4b,5b".\n',
