@@ -12,6 +12,8 @@ def check_length(ship, length):
 def is_straight_check(ship):
     if len(ship) == 1:
         return True
+    elif '' in ship:
+        return False
 
     field_keys = Cursor()._field_keys
     point_difference = field_keys.index(ship[1]) - field_keys.index(ship[0])

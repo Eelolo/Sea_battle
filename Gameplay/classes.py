@@ -171,15 +171,16 @@ class Game:
                 print(EXPLANATIONS[length_idx])
 
                 while True:
-                    ship = Ship(self.player.define_ship())
-                    if not check_for_matches(all_ships, ship.ship):
+                    points = self.player.define_ship()
+                    if not check_for_matches(all_ships, points):
                         print('Ship is too close to another.')
                     if False not in (
-                            check_for_matches(all_ships, ship.ship),
-                            points_in_field_keys_check(ship.ship),
-                            check_length(ship.ship, length),
-                            is_straight_check(ship.ship)
+                            check_for_matches(all_ships, points),
+                            points_in_field_keys_check(points),
+                            check_length(points, length),
+                            is_straight_check(points)
                     ):
+                        ship = Ship(points)
                         break
 
                 around_ship = ship.around_ship
