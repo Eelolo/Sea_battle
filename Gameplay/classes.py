@@ -77,12 +77,12 @@ class Opponent:
         for method in self.cur_methods:
             if self.cur_methods.count(method) >= 2:
                 self.discarded_methods.extend(PERPENDICULAR[method])
-                if self.cursor.check_move_result(self.cur_methods[-1]) == self.cursor.point:
+                if self.cursor.check_method_result(self.cur_methods[-1]) == self.cursor.point:
                     self.last_move_result = 'Miss.'
                     self.cursor.move(self.discarded_points[-1])
 
         for method in METHODS:
-            if self.cursor.check_move_result(method) in self.discarded_points[:-1]:
+            if self.cursor.check_method_result(method) in self.discarded_points[:-1]:
                 self.discarded_methods.append(method)
 
         if '1' in self.cursor.point and '10' not in self.cursor.point:

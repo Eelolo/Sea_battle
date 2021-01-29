@@ -1,4 +1,5 @@
 from battlefield.classes import Cursor
+from config.config import REVERSED, PERPENDICULAR
 
 
 class Ship:
@@ -38,10 +39,10 @@ class Ship:
             cur.move(ship[0])
 
             if loop_idx == 0:
-                around_ship.append(getattr(cur, cur._reversed_moves[cur_method])())
+                around_ship.append(getattr(cur, REVERSED[cur_method])())
             else:
-                getattr(cur, cur._reversed_moves[cur_method])()
-                around_ship.append(getattr(cur, cur._perpendicular_moves[cur_method][loop_idx - 1])())
+                getattr(cur, REVERSED[cur_method])()
+                around_ship.append(getattr(cur, PERPENDICULAR[cur_method][loop_idx - 1])())
 
             if cur.point == ship[0]:
                 break_on = self.length - 1

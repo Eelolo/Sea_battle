@@ -36,9 +36,6 @@ class Battlefield:
 
 
 class Cursor:
-    _reversed_moves = REVERSED
-    _perpendicular_moves = PERPENDICULAR
-
     def __init__(self, start_point=None):
         self._field = Battlefield()
         self._field_keys = list(self._field._field.keys())
@@ -91,17 +88,17 @@ class Cursor:
         self.point = point
         return self.point
 
-    def check_move_result(self, move):
-        if move not in ('up', 'down', 'left', 'right'):
+    def check_method_result(self, method):
+        if method not in ('up', 'down', 'left', 'right'):
             raise AttributeError("Move must be in: 'up', 'down', 'left', 'right'")
 
         point = self.point
 
-        getattr(self, move)()
+        getattr(self, method)()
 
         result = self.point
 
         if self.point != point:
-            getattr(self, REVERSED[move])()
+            getattr(self, REVERSED[method])()
 
         return result
