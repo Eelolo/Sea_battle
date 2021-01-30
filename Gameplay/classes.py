@@ -172,13 +172,13 @@ class Game:
 
     def __player_ships_placing(self):
         all_ships = []
-        for length_idx, length in enumerate(SHIPS_EMPTY_SET):
+        for length in SHIPS_EMPTY_SET:
             for ship_idx in SHIPS_EMPTY_SET[length]:
 
                 os.system('cls')
                 # os.system('clear')
                 print(FIELD.format(self.player_field))
-                print(EXPLANATIONS[length_idx])
+                print(EXPLANATIONS[SHIPS_ATTR_NAMES[length]])
 
                 while True:
                     points = self.player.define_ship()
