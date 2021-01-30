@@ -270,6 +270,8 @@ class Game:
             self.opponent.last_move_result = is_destroyed[0]
             self.opponent.area_to_exclude = is_destroyed[1]
 
+        time.sleep(1.0)
+
         return move, self.opponent.last_move_result
 
     def print_fields(self, player_result):
@@ -283,6 +285,8 @@ class Game:
         if not player_result:
             player_result = ''
 
+        os.system('cls')
+        # os.system('clear')
         print(
             GAME.format(
                 self.player_field, opp_info, self.hidden_field, player_result
@@ -299,7 +303,6 @@ class Game:
             if player == 'player':
                 result = self.player_move()
             else:
-                time.sleep(1.0)
                 self.opponent_move()
                 result = self.opponent.last_move_result
 
@@ -328,8 +331,6 @@ class Game:
     def game(self):
         player_result = ''
 
-        os.system('cls')
-        # os.system('clear')
         self.print_fields(player_result)
         while True:
             player_result = self.player_move()
@@ -337,9 +338,6 @@ class Game:
             self.end_check()
             player_result = self.repeat_move('player', player_result)
 
-            time.sleep(1.0)
-            os.system('cls')
-            # os.system('clear')
             self.opponent_move()
             self.print_fields(player_result)
             self.end_check()
