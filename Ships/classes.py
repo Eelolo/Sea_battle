@@ -1,16 +1,10 @@
 from battlefield.classes import Cursor
-from config.config import REVERSED, PERPENDICULAR
+from config.config import REVERSED, PERPENDICULAR, FIELD_KEYS
+from other.validation import Validation
 
 
 class Ship:
-    def points_difference(self, points):
-        cur = Cursor()
-        if len(points) == 1:
-            points_difference = 1
-        else:
-            points_difference = cur._field_keys.index(points[1]) - cur._field_keys.index(points[0])
-
-        return points_difference
+    validation = Validation()
 
     def define_orientation(self):
         if self.points_difference in (1, -1):
@@ -20,7 +14,9 @@ class Ship:
 
         return orientation
 
-    def area_around_ship(self, points):
+    def area_around_ship(self, points: list):
+        self.validation.is_straight_check(points)
+
         if self.points_difference in (1, -1):
             if self.points_difference > 0:
                 cur_method = 'right'
@@ -32,23 +28,22 @@ class Ship:
             else:
                 cur_method = 'up'
 
-        cur = Cursor()
         around_ship = []
         break_on = None
         for loop_idx in range(3):
-            cur.move(points[0])
+            self.cursor.move(points[0])
 
             if loop_idx == 0:
-                around_ship.append(getattr(cur, REVERSED[cur_method])())
+                around_ship.append(getattr(self.cursor, REVERSED[cur_method])())
             else:
-                getattr(cur, REVERSED[cur_method])()
-                around_ship.append(getattr(cur, PERPENDICULAR[cur_method][loop_idx - 1])())
+                getattr(self.cursor, REVERSED[cur_method])()
+                around_ship.append(getattr(self.cursor, PERPENDICULAR[cur_method][loop_idx - 1])())
 
-            if cur.point == points[0]:
+            if self.cursor.point == points[0]:
                 break_on = self.length - 1
 
             for move_idx in range(self.length + 1):
-                around_ship.append(getattr(cur, cur_method)())
+                around_ship.append(getattr(self.cursor, cur_method)())
                 if break_on is not None and move_idx == break_on:
                     break
 
@@ -56,13 +51,18 @@ class Ship:
 
         return around_ship
 
-    def __init__(self, points, around_ship=None):
+    def __init__(self, points: list, around_ship=None):
+        self.validation.points_on_field_check(points)
+        self.validation.is_straight_check(points)
+
         self.length = len(points)
-        self.points_difference = self.points_difference(points)
+        self.points_difference = self.validation.points_difference(points)
         self.orientation = self.define_orientation()
         self.points = points
+        self.cursor = Cursor()
 
         if around_ship is not None:
+            self.validation.points_on_field_check(points)
             self.around_ship = around_ship
         else:
             self.around_ship = self.area_around_ship(points)
@@ -70,7 +70,6 @@ class Ship:
         self.destroyed = False
 
     def __str__(self):
-        cur = Cursor()
-        cur._field.place_ship(self.points)
+        self.cursor._field.place_ship(self.points)
 
-        return cur._field
+        return self.cursor._field

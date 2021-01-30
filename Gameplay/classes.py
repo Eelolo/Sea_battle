@@ -1,20 +1,21 @@
 from battlefield.classes import Battlefield, Cursor
 from ships.classes import Ship
-from ships.functions import random_ships_set, check_for_matches
+from ships.functions import random_ships_set
 from config.config import (
-    SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, PERPENDICULAR, SEARCH_PLAN
+    SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, PERPENDICULAR, SEARCH_PLAN,
+    FIELD_KEYS
 )
 from config.templates.defining_ships import FIELD, EXPLANATIONS
 from config.templates.game import GAME
-from .functions import (
-    check_length, is_straight_check, points_on_field_check
-)
+from other.validation import Validation
 from random import choice
 import os
 import time
 
 
 class Player:
+    validation = Validation()
+
     def __init__(self):
         for length in SHIPS_EMPTY_SET:
             for ship_idx in SHIPS_EMPTY_SET[length]:
@@ -24,7 +25,7 @@ class Player:
     def define_ship(self):
         while True:
             points = input().replace(' ', '').split(',')
-            if points_on_field_check(points):
+            if self.validation.points_on_field_check(points, message=True):
                 break
 
         return points
@@ -32,7 +33,7 @@ class Player:
     def define_move(self):
         while True:
             point = input()
-            if points_on_field_check(point):
+            if self.validation.points_on_field_check(point, message=True):
                 break
 
         return point
@@ -134,9 +135,8 @@ class Opponent:
         return move
 
     def random_point(self):
-        cur = Cursor()
         nums_set = {str(num) for num in range(1, 11)}
-        available_points = list(set(cur._field_keys) - nums_set - set(self.discarded_points))
+        available_points = list(set(FIELD_KEYS) - nums_set - set(self.discarded_points))
         move = choice(available_points)
         self.discarded_points.append(move)
         return move
@@ -160,6 +160,8 @@ class Opponent:
 
 
 class Game:
+    validation = Validation()
+
     def __init__(self):
         self.player_field = Battlefield()
         self.opponent_field = Battlefield()
@@ -180,12 +182,11 @@ class Game:
 
                 while True:
                     points = self.player.define_ship()
-                    if not check_for_matches(all_ships, points):
-                        print('Ship is too close to another.')
+
                     if False not in (
-                            check_for_matches(all_ships, points),
-                            check_length(points, length),
-                            is_straight_check(points)
+                            self.validation.check_for_matches(all_ships, points, message=True),
+                            self.validation.check_length(points, length),
+                            self.validation.is_straight_check(points, message=True)
                     ):
                         ship = Ship(points)
                         break
@@ -317,7 +318,7 @@ class Game:
         else:
             message = '         Defeat.'
 
-        print(''.join(message))
+        print(message)
 
         exit()
 

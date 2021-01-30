@@ -20,16 +20,3 @@ def new_field():
             new_field[key] = ' ~'
 
     return new_field
-
-
-def check_point_value(point):
-    message = 'Start point must be like "1a" or "6d", in range 1a-10j.'
-
-    try:
-        integer = int(point[:-1])
-        letter = ord(point[-1])
-    except ValueError:
-        raise ValueError(message)
-
-    if integer not in range(1, 11) or letter not in range(97, 107):
-        raise ValueError(message)

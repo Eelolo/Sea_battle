@@ -1,31 +1,40 @@
-from .functions import new_field, check_point_value
-from config.config import REVERSED, PERPENDICULAR
+from .functions import new_field
+from other.validation import Validation
+from config.config import REVERSED, PERPENDICULAR, FIELD_KEYS
 
 
 class Battlefield:
+    validation = Validation()
+
     def __init__(self):
         self._field = new_field()
 
-    def change_value(self, point, value):
-        check_point_value(point)
+    def change_value(self, point: str, value: str):
+        self.validation.check_point_value(point)
+
         if '\n' in self._field[point]:
             self._field[point] = ' {}\n'.format(value)
         else:
             self._field[point] = ' {}'.format(value)
 
-    def place_ship(self, points):
+    def place_ship(self, points: list):
+        self.validation.is_straight_check(points)
+
         for point in points:
             self.change_value(point, '#')
 
-    def make_move(self, point):
+    def make_move(self, point: str):
         value = '.'
         result = 'Miss.'
 
-        if '#' in self._field[point]:
-            value = 'x'
-            result = 'Damaged.'
-        elif 'x' in self._field[point]:
-            value = 'x'
+        try:
+            if '#' in self._field[point]:
+                value = 'x'
+                result = 'Damaged.'
+            elif 'x' in self._field[point]:
+                value = 'x'
+        except KeyError:
+            pass
 
         self.change_value(point, value)
         return result
@@ -36,9 +45,10 @@ class Battlefield:
 
 
 class Cursor:
+    validation = Validation()
+
     def __init__(self, start_point=None):
         self._field = Battlefield()
-        self._field_keys = list(self._field._field.keys())
 
         if start_point is not None:
             self.point = start_point
@@ -46,14 +56,16 @@ class Cursor:
             self.point = '1a'
 
         self._field.change_value(self.point, 'X')
-        self._point_key_idx = self._field_keys.index(self.point)
+        self._point_key_idx = FIELD_KEYS.index(self.point)
 
     def __setattr__(self, key, value):
         if key == 'point':
-            check_point_value(value)
+            self.validation.check_point_value(value)
+
             if self.__dict__.get('point') is not None:
                 self._field.change_value(self.__dict__.get('point'), '~')
-                self._point_key_idx = self._field_keys.index(value)
+                self._point_key_idx = FIELD_KEYS.index(value)
+
             self._field.change_value(value, 'X')
 
         self.__dict__[key] = value
@@ -61,36 +73,35 @@ class Cursor:
     def up(self):
         if self._point_key_idx not in range(1, 11):
             self._point_key_idx -= 11
-            self.point = self._field_keys[self._point_key_idx]
+            self.point = FIELD_KEYS[self._point_key_idx]
         return self.point
 
     def down(self):
         if self._point_key_idx not in range(100, 110):
             self._point_key_idx += 11
-            self.point = self._field_keys[self._point_key_idx]
+            self.point = FIELD_KEYS[self._point_key_idx]
         return self.point
 
     def left(self):
         if self._point_key_idx not in range(1, 111, 11):
             self._point_key_idx -= 1
-            self.point = self._field_keys[self._point_key_idx]
+            self.point = FIELD_KEYS[self._point_key_idx]
         return self.point
 
 
     def right(self):
         if self._point_key_idx not in range(10, 110, 11):
             self._point_key_idx += 1
-            self.point = self._field_keys[self._point_key_idx]
+            self.point = FIELD_KEYS[self._point_key_idx]
         return self.point
 
-    def move(self, point):
-        check_point_value(point)
+    def move(self, point: str):
+        self.validation.check_point_value(point)
         self.point = point
         return self.point
 
-    def check_method_result(self, method):
-        if method not in ('up', 'down', 'left', 'right'):
-            raise AttributeError("Move must be in: 'up', 'down', 'left', 'right'")
+    def check_method_result(self, method: str):
+        self.validation.check_method(method)
 
         point = self.point
 
