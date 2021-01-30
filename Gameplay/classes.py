@@ -1,14 +1,11 @@
 from battlefield.classes import Battlefield, Cursor
-from ships.classes import Ship
-from ships.functions import random_ships_set
-from config.config import (
-    SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, PERPENDICULAR, SEARCH_PLAN,
-    FIELD_KEYS
-)
+from config.config import SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, PERPENDICULAR, SEARCH_PLAN, FIELD_KEYS
 from config.templates.defining_ships import FIELD, EXPLANATIONS
 from config.templates.game import GAME
 from other.validation import Validation
 from random import choice
+from ships.classes import Ship
+from ships.functions import random_ships_set
 import os
 import time
 

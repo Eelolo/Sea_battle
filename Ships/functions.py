@@ -1,8 +1,8 @@
-from random import choice, randint
+from .classes import Ship
 from battlefield.classes import Cursor
 from config.config import SHIPS_EMPTY_SET
-from .classes import Ship
 from other.validation import Validation
+from random import choice, randint
 
 
 def new_ship(length, orientation=None, start_point=None):

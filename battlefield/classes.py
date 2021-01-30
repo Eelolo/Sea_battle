@@ -1,6 +1,6 @@
 from .functions import new_field
-from other.validation import Validation
 from config.config import REVERSED, PERPENDICULAR, FIELD_KEYS
+from other.validation import Validation
 
 
 class Battlefield:
