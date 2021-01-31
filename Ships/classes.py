@@ -1,6 +1,11 @@
 from battlefield.classes import Cursor
-from config.config import REVERSED, PERPENDICULAR, FIELD_KEYS
 from other.validation import Validation
+from other.env_vars import load_variable
+
+
+FIELD_KEYS = load_variable('FIELD_KEYS')
+REVERSED = load_variable('REVERSED')
+PERPENDICULAR = load_variable('PERPENDICULAR')
 
 
 class Ship:

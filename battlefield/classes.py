@@ -1,6 +1,9 @@
-from .functions import new_field
-from config.config import REVERSED, PERPENDICULAR, FIELD_KEYS
 from other.validation import Validation
+from other.env_vars import load_variable
+
+
+FIELD_KEYS = load_variable('FIELD_KEYS')
+REVERSED = load_variable('REVERSED')
 
 
 class Battlefield:

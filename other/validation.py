@@ -1,4 +1,10 @@
-from config.config import FIELD_KEYS, FIELD_POINTS, ERRORS, METHODS
+from .env_vars import load_variable
+from config.config import ERRORS
+
+
+FIELD_KEYS = load_variable('FIELD_KEYS')
+FIELD_POINTS = load_variable('FIELD_POINTS')
+METHODS = load_variable('METHODS')
 
 
 class Validation:

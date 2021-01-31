@@ -1,13 +1,19 @@
 from battlefield.classes import Battlefield, Cursor
-from config.config import SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, METHODS, PERPENDICULAR, SEARCH_PLAN, FIELD_KEYS
+from config.config import SHIPS_EMPTY_SET, SHIPS_ATTR_NAMES, SEARCH_PLAN
 from config.templates.defining_ships import FIELD, EXPLANATIONS
 from config.templates.game import GAME
 from other.validation import Validation
+from other.env_vars import load_variable
 from random import choice
 from ships.classes import Ship
 from ships.functions import random_ships_set
 import os
 import time
+
+
+FIELD_KEYS = load_variable('FIELD_KEYS')
+METHODS = load_variable('METHODS')
+PERPENDICULAR = load_variable('PERPENDICULAR')
 
 
 class Player:

@@ -1,10 +1,3 @@
-from battlefield.functions import new_field
-
-
-FIELD_KEYS = list(new_field().keys())
-
-FIELD_POINTS = list(set(FIELD_KEYS) - {str(num) for num in range(1,11)})
-
 ERRORS = {
     'check_point_value': 'Start point must be like "1a" or "6d", in range 1a-10j.',
     'check_length': 'Length must be equal to {}.',
@@ -12,22 +5,6 @@ ERRORS = {
     'points_on_field_check': 'Entered point not from a field.',
     'check_for_matches': 'Ship is too close to another.'
 }
-
-METHODS = ['up', 'down', 'left', 'right']
-
-REVERSED = {
-            'right': 'left',
-            'left': 'right',
-            'down': 'up',
-            'up': 'down'
-        }
-
-PERPENDICULAR = {
-            'right': ('up', 'down'),
-            'left': ('up', 'down'),
-            'down': ('right', 'left'),
-            'up': ('right', 'left')
-        }
 
 SHIPS_EMPTY_SET = {
         4: {
