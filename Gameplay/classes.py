@@ -85,6 +85,9 @@ class Opponent:
     def regulation(self):
         if self.last_move_result == 'Damaged.' and self.cur_methods:
             self.cur_methods.append(self.cur_methods[-1])
+            if self.cursor.check_method_result(self.cur_methods[-1]) in self.discarded_points[:-1]:
+                self.last_move_result = 'Miss.'
+                self.cursor.move(self.discarded_points[-1])
 
         for method in self.cur_methods:
             if self.cur_methods.count(method) >= 2:
