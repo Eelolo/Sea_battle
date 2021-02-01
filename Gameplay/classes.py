@@ -17,7 +17,7 @@ PERPENDICULAR = load_variable('PERPENDICULAR')
 
 
 class Player:
-    validation = Validation()
+    __validation = Validation()
 
     def __init__(self):
         for length in SHIPS_EMPTY_SET:
@@ -28,7 +28,7 @@ class Player:
     def define_ship(self):
         while True:
             points = input().replace(' ', '').split(',')
-            if self.validation.points_on_field_check(points, message=True):
+            if self.__validation.points_on_field_check(points, message=True):
                 break
 
         return points
@@ -36,16 +36,17 @@ class Player:
     def define_move(self):
         while True:
             point = input()
-            if self.validation.points_on_field_check(point, message=True):
+            if self.__validation.points_on_field_check(point, message=True):
                 break
 
         return point
 
 
 class Opponent:
-    search_plan = SEARCH_PLAN
+    __search_plan = SEARCH_PLAN
+    __validation = Validation()
 
-    def ships_placing(self):
+    def _ships_placing(self):
         ships = random_ships_set()
 
         for length in ships:
@@ -55,144 +56,180 @@ class Opponent:
                 setattr(self, ship_attr_name, ship)
 
     def __init__(self):
-        self.status = 'search'
-        self.last_move_result = ''
-        self.discarded_points = []
-        self.cursor = Cursor()
-        self.cur_methods = []
-        self.discarded_methods = []
-        self.area_to_exclude = []
-        self.last_move_point = ''
-        self.waits_to_discard = []
+        self._status = 'search'
+        self._last_move_result = ''
+        self._discarded_points = []
+        self.__cursor = Cursor()
+        self._cur_methods = []
+        self._discarded_methods = []
+        self._area_to_exclude = []
+        self._last_move_point = ''
+        self._waits_to_discard = []
 
-        self.ships_placing()
+        self._ships_placing()
 
-    def search(self):
-        if self.search_plan:
-            while self.search_plan[-1] in self.discarded_points:
-                self.search_plan.pop(-1)
-                if not self.search_plan:
+    def __setattr__(self, key, value):
+        if key in ('_last_move_result', '_status'):
+            if key == '_status':
+                values = 'search', 'destruction'
+            else:
+                values = 'Miss.', 'Damaged.', 'Destroyed.'
+
+            if self.__dict__.get(key) is not None:
+                if value not in values:
+                    raise ValueError('{} attribute must be in {}.'.format(key, values))
+
+        if key in ('_discarded_points', '_area_to_exclude', '_waits_to_discard', '_last_move_point'):
+            if self.__dict__.get(key) is not None:
+                if not self.__validation.points_on_field_check(value, message=True):
+                    raise ValueError('Points on field check error.')
+
+        if key in ('_cur_methods', '_discarded_methods'):
+            if self.__dict__.get(key) is not None:
+                if not isinstance(value, list):
+                    raise TypeError('{} attribute must be a list that contains methods.'.format(key))
+
+                for method in value:
+                    if method not in METHODS:
+                        raise ValueError('{} not in {}.'.format(method, METHODS))
+
+        self.__dict__[key] = value
+
+    def _search(self):
+        if self.__search_plan:
+            while self.__search_plan[-1] in self._discarded_points:
+                self.__search_plan.pop(-1)
+                if not self.__search_plan:
                     break
 
-        if not self.search_plan:
-            move = self.random_point()
+        if not self.__search_plan:
+            move = self._random_point()
         else:
-            move = self.search_plan.pop(-1)
-            self.discarded_points.append(move)
+            move = self.__search_plan.pop(-1)
+            self._discarded_points.append(move)
 
         return move
 
-    def regulation(self):
-        if self.last_move_result == 'Damaged.' and self.cur_methods:
-            self.cur_methods.append(self.cur_methods[-1])
-            if self.cursor.check_method_result(self.cur_methods[-1]) in self.discarded_points[:-1]:
-                self.last_move_result = 'Miss.'
-                self.cursor.move(self.discarded_points[-1])
+    def __regulation(self):
+        if self._last_move_result == 'Damaged.' and self._cur_methods:
+            self._cur_methods.append(self._cur_methods[-1])
+            if self.__cursor.check_method_result(self._cur_methods[-1]) in self._discarded_points[:-1]:
+                self._last_move_result = 'Miss.'
+                self.__cursor.move(self._discarded_points[-1])
 
-        for method in self.cur_methods:
-            if self.cur_methods.count(method) >= 2:
-                self.discarded_methods.extend(PERPENDICULAR[method])
-                if self.cursor.check_method_result(self.cur_methods[-1]) == self.cursor.point:
-                    self.last_move_result = 'Miss.'
-                    self.cursor.move(self.discarded_points[-1])
+        for method in self._cur_methods:
+            if self._cur_methods.count(method) >= 2:
+                self._discarded_methods.extend(PERPENDICULAR[method])
+                if self.__cursor.check_method_result(self._cur_methods[-1]) == self.__cursor.point:
+                    self._last_move_result = 'Miss.'
+                    self.__cursor.move(self._discarded_points[-1])
 
         for method in METHODS:
-            if self.cursor.check_method_result(method) in self.discarded_points[:-1]:
-                self.discarded_methods.append(method)
+            if self.__cursor.check_method_result(method) in self._discarded_points[:-1]:
+                self._discarded_methods.append(method)
 
-        if '1' in self.cursor.point and '10' not in self.cursor.point:
-            self.discarded_methods.append('up')
-        elif '10' in self.cursor.point:
-            self.discarded_methods.append('down')
+        if '1' in self.__cursor.point and '10' not in self.__cursor.point:
+            self._discarded_methods.append('up')
+        elif '10' in self.__cursor.point:
+            self._discarded_methods.append('down')
 
-        if 'a' in self.cursor.point:
-            self.discarded_methods.append('left')
-        elif 'j' in self.cursor.point:
-            self.discarded_methods.append('right')
+        if 'a' in self.__cursor.point:
+            self._discarded_methods.append('left')
+        elif 'j' in self.__cursor.point:
+            self._discarded_methods.append('right')
 
-    def destruction(self):
-        if self.last_move_result == 'Damaged.':
-            start_point = self.last_move_point
+    def __destruction(self):
+        if self._last_move_result == 'Damaged.':
+            start_point = self._last_move_point
         else:
-            start_point = self.discarded_points[-1]
+            start_point = self._discarded_points[-1]
 
-        self.cursor.move(start_point)
+        self.__cursor.move(start_point)
 
-        self.regulation()
+        self.__regulation()
 
-        if not self.cur_methods:
-            self.cur_methods.append(
+        if not self._cur_methods:
+            self._cur_methods.append(
                 choice(
-                    list(set(METHODS) - set(self.discarded_methods))
+                    list(set(METHODS) - set(self._discarded_methods))
                 )
             )
 
-        if self.last_move_result == 'Miss.':
-            self.cur_methods.append(
+        if self._last_move_result == 'Miss.':
+            self._cur_methods.append(
                 choice(
-                    list(set(METHODS) - set(self.cur_methods) - set(self.discarded_methods))
+                    list(set(METHODS) - set(self._cur_methods) - set(self._discarded_methods))
                 )
             )
 
-        method = self.cur_methods[-1]
-        move = getattr(self.cursor, method)()
-        self.waits_to_discard.append(move)
+        method = self._cur_methods[-1]
+        move = getattr(self.__cursor, method)()
+        self._waits_to_discard.append(move)
 
         return move
 
-    def random_point(self):
+    def _random_point(self):
         nums_set = {str(num) for num in range(1, 11)}
-        available_points = list(set(FIELD_KEYS) - nums_set - set(self.discarded_points))
+        available_points = list(set(FIELD_KEYS) - nums_set - set(self._discarded_points))
         move = choice(available_points)
-        self.discarded_points.append(move)
+        self._discarded_points.append(move)
         return move
 
-    def define_move(self):
-        if self.last_move_result == 'Damaged.':
-            self.status = 'destruction'
-        elif self.last_move_result == 'Destroyed.':
-            self.cur_methods = []
-            self.discarded_methods = []
-            self.discarded_points += self.area_to_exclude + self.waits_to_discard
-            self.waits_to_discard = []
-            self.status = 'search'
+    def _define_move(self):
+        if self._last_move_result == 'Damaged.':
+            self._status = 'destruction'
+        elif self._last_move_result == 'Destroyed.':
+            self._cur_methods = []
+            self._discarded_methods = []
+            self._discarded_points += self._area_to_exclude + self._waits_to_discard
+            self._waits_to_discard = []
+            self._status = 'search'
 
-        if self.status == 'destruction':
-            move = self.destruction()
+        if self._status == 'destruction':
+            move = self.__destruction()
         else:
-            move = self.search()
+            move = self._search()
 
         return move
 
 
 class Game:
-    validation = Validation()
+    __validation = Validation()
 
     def __init__(self):
-        self.player_field = Battlefield()
-        self.opponent_field = Battlefield()
-        self.hidden_field = Battlefield()
-        self.player = Player()
-        self.opponent = Opponent()
-        self.start()
+        self._player_field = Battlefield()
+        self._opponent_field = Battlefield()
+        self._hidden_field = Battlefield()
+        self._player = Player()
+        self._opponent = Opponent()
 
-    def __player_ships_placing(self):
+    def __setattr__(self, key, value):
+        attrs = ['_player_field', '_opponent_field', '_hidden_field', '_player', '_opponent']
+        if key in attrs:
+            if self.__dict__.get(key) is not None:
+                instance = self.__dict__.get(key)
+                if not isinstance(value, instance):
+                    raise TypeError('{} attribute must be instance of {}.'. format(key, instance))
+
+        self.__dict__[key] = value
+
+    def _player_ships_placing(self):
         all_ships = []
         for length in SHIPS_EMPTY_SET:
             for ship_idx in SHIPS_EMPTY_SET[length]:
 
                 os.system('cls')
                 # os.system('clear')
-                print(FIELD.format(self.player_field))
+                print(FIELD.format(self._player_field))
                 print(EXPLANATIONS[SHIPS_ATTR_NAMES[length]])
 
                 while True:
-                    points = self.player.define_ship()
+                    points = self._player.define_ship()
 
                     if False not in (
-                            self.validation.check_for_matches(all_ships, points, message=True),
-                            self.validation.check_length(points, length),
-                            self.validation.is_straight_check(points, message=True)
+                            self.__validation.check_for_matches(all_ships, points, message=True),
+                            self.__validation.check_length(points, length),
+                            self.__validation.is_straight_check(points, message=True)
                     ):
                         ship = Ship(points)
                         break
@@ -200,23 +237,23 @@ class Game:
                 around_ship = ship.around_ship
 
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
-                setattr(self.player, ship_attr_name, ship)
+                setattr(self._player, ship_attr_name, ship)
 
-                self.player_field.place_ship(ship.points)
+                self._player_field.place_ship(ship.points)
 
                 all_ships += ship.points + around_ship
 
-    def opponent_ships_placing(self):
+    def _opponent_ships_placing(self):
         ships = SHIPS_EMPTY_SET
 
         for length in ships:
             for ship_idx in ships[length]:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
-                points = getattr(self.opponent, ship_attr_name).points
+                points = getattr(self._opponent, ship_attr_name).points
 
-                self.opponent_field.place_ship(points)
+                self._opponent_field.place_ship(points)
 
-    def is_destroyed_check(self, move, player):
+    def __is_destroyed_check(self, move, player):
         ships = SHIPS_EMPTY_SET
         field = getattr(self, player + '_field')._field
         player_object = getattr(self, player)
@@ -238,8 +275,8 @@ class Game:
             if '#' not in field_values and ship.destroyed == False:
                 return around_ship, player_object, ship_attr_name
 
-    def outline_ship(self, move, field_name, player):
-        check_result = self.is_destroyed_check(move, player)
+    def __outline_ship(self, move, field_name, player):
+        check_result = self.__is_destroyed_check(move, player)
 
         if check_result:
             ship_object = getattr(check_result[1], check_result[2])
@@ -252,41 +289,41 @@ class Game:
 
             return result, around_ship
 
-    def player_move(self):
-        move = self.player.define_move()
-        result = self.opponent_field.make_move(move)
-        is_destroyed = self.outline_ship(move, 'opponent_field', 'opponent')
+    def _player_move(self):
+        move = self._player.define_move()
+        result = self._opponent_field.make_move(move)
+        is_destroyed = self.__outline_ship(move, '_opponent_field', '_opponent')
 
         if is_destroyed:
             result = is_destroyed[0]
 
-        for key in self.opponent_field._field:
-            if self.hidden_field._field[key] != self.opponent_field._field[key]:
-                if 'x' in self.opponent_field._field[key]:
-                    self.hidden_field.change_value(key, 'x')
-                elif '.' in self.opponent_field._field[key]:
-                    self.hidden_field.change_value(key, '.')
+        for key in self._opponent_field._field:
+            if self._hidden_field._field[key] != self._opponent_field._field[key]:
+                if 'x' in self._opponent_field._field[key]:
+                    self._hidden_field.change_value(key, 'x')
+                elif '.' in self._opponent_field._field[key]:
+                    self._hidden_field.change_value(key, '.')
 
         return result
 
-    def opponent_move(self):
-        move = self.opponent.define_move()
-        self.opponent.last_move_point = move
-        self.opponent.last_move_result = self.player_field.make_move(move)
-        is_destroyed = self.outline_ship(move, 'player_field', 'player')
+    def _opponent_move(self):
+        move = self._opponent._define_move()
+        self._opponent._last_move_point = move
+        self._opponent._last_move_result = self._player_field.make_move(move)
+        is_destroyed = self.__outline_ship(move, '_player_field', '_player')
 
         if is_destroyed:
-            self.opponent.last_move_result = is_destroyed[0]
-            self.opponent.area_to_exclude = is_destroyed[1]
+            self._opponent._last_move_result = is_destroyed[0]
+            self._opponent._area_to_exclude = is_destroyed[1]
 
         time.sleep(1.0)
 
-        return move, self.opponent.last_move_result
+        return move, self._opponent._last_move_result
 
-    def print_fields(self, player_result):
-        if self.opponent.last_move_point:
+    def __print_fields(self, player_result):
+        if self._opponent._last_move_point:
             opp_info = 'Opponent`s move: {}. {}'.format(
-                self.opponent.last_move_point, self.opponent.last_move_result
+                self._opponent._last_move_point, self._opponent._last_move_result
             )
         else:
             opp_info = ''
@@ -298,30 +335,30 @@ class Game:
         # os.system('clear')
         print(
             GAME.format(
-                self.player_field, opp_info, self.hidden_field, player_result
+                self._player_field, opp_info, self._hidden_field, player_result
             )
         )
 
-    def repeat_move(self, player, player_result=None):
+    def __repeat_move(self, player, player_result=None):
         if player == 'player':
             result = player_result
         else:
-            result = self.opponent.last_move_result
+            result = self._opponent._last_move_result
 
         while result in ('Damaged.', 'Destroyed.'):
             if player == 'player':
-                result = self.player_move()
+                result = self._player_move()
             else:
-                self.opponent_move()
-                result = self.opponent.last_move_result
+                self._opponent_move()
+                result = self._opponent._last_move_result
 
-            self.print_fields(player_result)
-            self.end_check()
+            self.__print_fields(player_result)
+            self.__end_check()
 
         if player == 'player':
             return result
 
-    def end(self, player):
+    def __end(self, player):
         if player == 'player':
             message = '        You won!'
         else:
@@ -331,28 +368,28 @@ class Game:
 
         exit()
 
-    def end_check(self):
-        if '#' not in str(self.player_field):
-            self.end('opponent')
-        elif '#' not in str(self.opponent_field):
-            self.end('player')
+    def __end_check(self):
+        if '#' not in str(self._player_field):
+            self.__end('opponent')
+        elif '#' not in str(self._opponent_field):
+            self.__end('player')
 
-    def game(self):
+    def _game(self):
         player_result = ''
 
-        self.print_fields(player_result)
+        self.__print_fields(player_result)
         while True:
-            player_result = self.player_move()
-            self.print_fields(player_result)
-            self.end_check()
-            player_result = self.repeat_move('player', player_result)
+            player_result = self._player_move()
+            self.__print_fields(player_result)
+            self.__end_check()
+            player_result = self.__repeat_move('player', player_result)
 
-            self.opponent_move()
-            self.print_fields(player_result)
-            self.end_check()
-            self.repeat_move('opponent')
+            self._opponent_move()
+            self.__print_fields(player_result)
+            self.__end_check()
+            self.__repeat_move('opponent')
 
     def start(self):
-        self.__player_ships_placing()
-        self.opponent_ships_placing()
-        self.game()
+        self._player_ships_placing()
+        self._opponent_ships_placing()
+        self._game()
