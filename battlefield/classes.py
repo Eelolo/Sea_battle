@@ -7,7 +7,7 @@ REVERSED = load_variable('REVERSED')
 
 
 class Battlefield:
-    validation = Validation()
+    __validation = Validation()
 
     def new_field(self):
         new_field = {}
@@ -35,8 +35,15 @@ class Battlefield:
     def __init__(self):
         self._field = self.new_field()
 
+    def __setattr__(self, key, value):
+        if key == '_field':
+            if self.__dict__.get('_field') is not None and key != self.new_field():
+                raise ValueError("The field can only be replaced by an identical blank field.")
+
+        self.__dict__[key] = value
+
     def change_value(self, point: str, value: str):
-        self.validation.check_point_value(point)
+        self.__validation.check_point_value(point)
 
         if '\n' in self._field[point]:
             self._field[point] = ' {}\n'.format(value)
@@ -44,7 +51,7 @@ class Battlefield:
             self._field[point] = ' {}'.format(value)
 
     def place_ship(self, points: list):
-        self.validation.is_straight_check(points)
+        self.__validation.is_straight_check(points)
 
         for point in points:
             self.change_value(point, '#')
@@ -71,7 +78,7 @@ class Battlefield:
 
 
 class Cursor:
-    validation = Validation()
+    __validation = Validation()
 
     def __init__(self, start_point=None):
         self._field = Battlefield()
@@ -82,52 +89,55 @@ class Cursor:
             self.point = '1a'
 
         self._field.change_value(self.point, 'X')
-        self._point_key_idx = FIELD_KEYS.index(self.point)
+        self.__point_key_idx = FIELD_KEYS.index(self.point)
 
     def __setattr__(self, key, value):
         if key == 'point':
-            self.validation.check_point_value(value)
+            self.__validation.check_point_value(value)
 
             if self.__dict__.get('point') is not None:
                 self._field.change_value(self.__dict__.get('point'), '~')
-                self._point_key_idx = FIELD_KEYS.index(value)
+                self.__point_key_idx = FIELD_KEYS.index(value)
 
             self._field.change_value(value, 'X')
+        elif key == '_field' and self.__dict__.get('_field') is not None:
+            if not isinstance(value, Battlefield):
+                raise TypeError('_field attribute must be instance of Battlefield class.')
 
         self.__dict__[key] = value
 
     def up(self):
-        if self._point_key_idx not in range(1, 11):
-            self._point_key_idx -= 11
-            self.point = FIELD_KEYS[self._point_key_idx]
+        if self.__point_key_idx not in range(1, 11):
+            self.__point_key_idx -= 11
+            self.point = FIELD_KEYS[self.__point_key_idx]
         return self.point
 
     def down(self):
-        if self._point_key_idx not in range(100, 110):
-            self._point_key_idx += 11
-            self.point = FIELD_KEYS[self._point_key_idx]
+        if self.__point_key_idx not in range(100, 110):
+            self.__point_key_idx += 11
+            self.point = FIELD_KEYS[self.__point_key_idx]
         return self.point
 
     def left(self):
-        if self._point_key_idx not in range(1, 111, 11):
-            self._point_key_idx -= 1
-            self.point = FIELD_KEYS[self._point_key_idx]
+        if self.__point_key_idx not in range(1, 111, 11):
+            self.__point_key_idx -= 1
+            self.point = FIELD_KEYS[self.__point_key_idx]
         return self.point
 
 
     def right(self):
-        if self._point_key_idx not in range(10, 110, 11):
-            self._point_key_idx += 1
-            self.point = FIELD_KEYS[self._point_key_idx]
+        if self.__point_key_idx not in range(10, 110, 11):
+            self.__point_key_idx += 1
+            self.point = FIELD_KEYS[self.__point_key_idx]
         return self.point
 
     def move(self, point: str):
-        self.validation.check_point_value(point)
+        self.__validation.check_point_value(point)
         self.point = point
         return self.point
 
     def check_method_result(self, method: str):
-        self.validation.check_method(method)
+        self.__validation.check_method(method)
 
         point = self.point
 
