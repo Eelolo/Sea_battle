@@ -8,7 +8,42 @@ METHODS = load_variable('METHODS')
 
 
 class Validation:
-    def points_difference(self, points):
+    def is_int(self, instance, inst_name):
+        if not isinstance(instance, int):
+            raise TypeError('{} must be a integer.'.format(inst_name))
+
+        return isinstance(instance, int)
+
+    def is_str(self, instance, inst_name):
+        if not isinstance(instance, str):
+            raise TypeError('{} must be a string.'.format(inst_name))
+
+        return isinstance(instance, str)
+
+    def is_list(self, instance, inst_name):
+        if not isinstance(instance, list):
+            raise TypeError('{} must be a list.'.format(inst_name))
+
+        return isinstance(instance, list)
+
+    def check_point_value(self, point: str):
+        message = ERRORS['check_point_value']
+
+        try:
+            integer = int(point[:-1])
+            letter = ord(point[-1])
+        except TypeError:
+            raise ValueError(message)
+
+        if integer not in range(1, 11) or letter not in range(97, 107):
+            raise ValueError(message)
+
+    def points_difference(self, points: list):
+        self.is_list(points, 'Points')
+
+        for point in points:
+            self.check_point_value(point)
+
         if len(points) == 1:
             points_difference = 1
         else:
@@ -16,19 +51,10 @@ class Validation:
 
         return points_difference
 
-    def check_point_value(self, point):
-        message = ERRORS['check_point_value']
+    def check_length(self, points: list, length: int):
+        self.is_list(points, 'Points')
+        self.is_int(length, 'Length')
 
-        try:
-            integer = int(point[:-1])
-            letter = ord(point[-1])
-        except ValueError:
-            raise ValueError(message)
-
-        if integer not in range(1, 11) or letter not in range(97, 107):
-            raise ValueError(message)
-
-    def check_length(self, points, length):
         if len(points) != length:
             print(ERRORS['check_length'].format(length))
 
@@ -36,7 +62,43 @@ class Validation:
 
         return True
 
-    def is_straight_check(self, points, message=False):
+    def check_for_matches(self, array0, array1, message=False):
+        self.is_list(array0, 'Array0')
+        self.is_list(array0, 'Array1')
+
+        if set(array0) & set(array1) == set():
+            return True
+        else:
+            if message:
+                print(ERRORS['check_for_matches'])
+
+            return False
+
+    def points_on_field_check(self, points, message=False):
+        if isinstance(points, list):
+            points = set(points)
+
+            if len(points) > 1:
+                message = ERRORS['points_on_field_check'].replace('point', 'points')
+
+        elif isinstance(points, str):
+            points = {points}
+        else:
+            raise TypeError('Points must be list or string')
+
+        if points - set(FIELD_POINTS) != set():
+            if message:
+                print(ERRORS['points_on_field_check'])
+            else:
+                raise ValueError(ERRORS['points_on_field_check'])
+
+            return False
+
+        return True
+
+    def is_straight_check(self, points: list, message=False):
+        self.is_list(points, 'Points')
+
         if len(points) == 1:
             return True
         elif '' in points:
@@ -66,34 +128,3 @@ class Validation:
     def check_method(self, method):
         if method not in METHODS:
             raise AttributeError("Move must be in: 'up', 'down', 'left', 'right'")
-
-    def points_on_field_check(self, points, message=False):
-        if isinstance(points, list):
-            points = set(points)
-
-            if len(points) > 1:
-                message = ERRORS['points_on_field_check'].replace('point', 'points')
-
-        elif isinstance(points, str):
-            points = {points}
-        else:
-            raise TypeError('points must be list or string')
-
-        if points - set(FIELD_POINTS) != set():
-            if message:
-                print(ERRORS['points_on_field_check'])
-            else:
-                raise ValueError(ERRORS['points_on_field_check'])
-
-            return False
-
-        return True
-
-    def check_for_matches(self, array0, array1, message=False):
-        if set(array0) & set(array1) == set():
-            return True
-        else:
-            if message:
-                print(ERRORS['check_for_matches'])
-
-            return False

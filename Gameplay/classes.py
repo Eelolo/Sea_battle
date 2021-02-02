@@ -81,8 +81,7 @@ class Opponent:
 
         if key in ('_discarded_points', '_area_to_exclude', '_waits_to_discard', '_last_move_point'):
             if self.__dict__.get(key) is not None:
-                if not self.__validation.points_on_field_check(value, message=True):
-                    raise ValueError('Points on field check error.')
+                self.__validation.points_on_field_check(value)
 
         if key in ('_cur_methods', '_discarded_methods'):
             if self.__dict__.get(key) is not None:
@@ -208,8 +207,12 @@ class Game:
         if key in attrs:
             if self.__dict__.get(key) is not None:
                 instance = self.__dict__.get(key)
-                if not isinstance(value, instance):
-                    raise TypeError('{} attribute must be instance of {}.'. format(key, instance))
+                if not isinstance(value, type(instance)):
+                    raise TypeError(
+                        '{} attribute must be instance of {} class.'. format(
+                            key, type(instance).__name__
+                        )
+                    )
 
         self.__dict__[key] = value
 
@@ -239,9 +242,9 @@ class Game:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
                 setattr(self._player, ship_attr_name, ship)
 
-                self._player_field.place_ship(ship.points)
+                self._player_field.place_ship(ship._points)
 
-                all_ships += ship.points + around_ship
+                all_ships += ship._points + around_ship
 
     def _opponent_ships_placing(self):
         ships = SHIPS_EMPTY_SET
@@ -249,7 +252,7 @@ class Game:
         for length in ships:
             for ship_idx in ships[length]:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
-                points = getattr(self._opponent, ship_attr_name).points
+                points = getattr(self._opponent, ship_attr_name)._points
 
                 self._opponent_field.place_ship(points)
 
@@ -263,7 +266,7 @@ class Game:
             for ship_idx in ships[length]:
                 ship_attr_name = SHIPS_ATTR_NAMES[length]+str(ship_idx)
                 ship = getattr(player_object, ship_attr_name)
-                if move in ship.points:
+                if move in ship._points:
                     around_ship = ship.around_ship
                     break
             else:
@@ -271,7 +274,7 @@ class Game:
             break
 
         if around_ship:
-            field_values = ''.join([field[point] for point in ship.points])
+            field_values = ''.join([field[point] for point in ship._points])
             if '#' not in field_values and ship.destroyed == False:
                 return around_ship, player_object, ship_attr_name
 

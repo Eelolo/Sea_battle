@@ -37,7 +37,7 @@ class Battlefield:
 
     def __setattr__(self, key, value):
         if key == '_field':
-            if self.__dict__.get('_field') is not None and key != self.new_field():
+            if self.__dict__.get('_field') is not None and value != self.new_field():
                 raise ValueError("The field can only be replaced by an identical blank field.")
 
         self.__dict__[key] = value

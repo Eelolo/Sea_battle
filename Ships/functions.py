@@ -5,7 +5,7 @@ from other.validation import Validation
 from random import choice, randint
 
 
-def new_ship(length, orientation=None, start_point=None):
+def new_ship(length: int, orientation=None, start_point=None):
     if orientation is not None and orientation in ('hor', 'vert'):
         orientation = orientation
     elif orientation is None:
@@ -14,6 +14,8 @@ def new_ship(length, orientation=None, start_point=None):
         raise ValueError('Orientation must be "hor" or "vert".')
 
     validation = Validation()
+    validation.is_int(length, 'Length')
+
     if start_point is not None:
         validation.check_point_value(start_point)
         if '10' in start_point:
@@ -58,10 +60,10 @@ def random_ships_set():
             while True:
                 ship = Ship(new_ship(length))
                 around_ship = ship.around_ship
-                if validation.check_for_matches(all_ships, ship.points):
+                if validation.check_for_matches(all_ships, ship._points):
                     break
 
             ships[length][ship_idx] = ship
-            all_ships += ship.points + around_ship
+            all_ships += ship._points + around_ship
 
     return ships
